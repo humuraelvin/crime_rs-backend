@@ -5,6 +5,7 @@ import com.crime.reporting.crime_reporting_backend.entity.Complaint;
 import com.crime.reporting.crime_reporting_backend.repository.ComplaintRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class HotspotAnalysisService {
 
     private final ComplaintRepository complaintRepository;
@@ -200,5 +202,15 @@ public class HotspotAnalysisService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         
         return EARTH_RADIUS * c;
+    }
+
+    public Map<String, Long> getCrimeHotspots() {
+        List<Complaint> complaints = complaintRepository.findAll();
+        
+        return complaints.stream()
+                .collect(Collectors.groupingBy(
+                        Complaint::getLocation,
+                        Collectors.counting()
+                ));
     }
 } 

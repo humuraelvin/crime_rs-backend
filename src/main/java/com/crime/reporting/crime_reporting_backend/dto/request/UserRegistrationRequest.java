@@ -1,4 +1,4 @@
-package com.crime.reporting.dto.request;
+package com.crime.reporting.crime_reporting_backend.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,7 +1,6 @@
-package com.crime.reporting.dto.request;
+package com.crime.reporting.crime_reporting_backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,13 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CaseNoteRequest {
-    @NotNull
-    private Long complaintId;
+public class LoginRequest {
+    @NotBlank
+    private String email;
     
     @NotBlank
-    private String note;
+    private String password;
     
-    @Builder.Default
-    private boolean internal = false;
+    private String mfaCode;
 } 
