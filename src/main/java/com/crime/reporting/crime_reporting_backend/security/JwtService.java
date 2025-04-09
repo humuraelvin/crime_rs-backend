@@ -5,9 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,34 +13,22 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class JwtService {
-
-    @Value("${jwt.secret:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
+    
+    private final Map<String, Boolean> invalidatedTokens = new ConcurrentHashMap<>();
+    
+    @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.expiration:86400000}") // Default 24 hours
+    @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    @Value("${jwt.refresh-expiration:604800000}") // Default 7 days
+    @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;
-    
-    private final RedisTemplate<String, String> redisTemplate;
-    
-    private Key signingKey;
-
-    public JwtService(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
-
-    @PostConstruct
-    public void init() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
-    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -64,7 +50,9 @@ public class JwtService {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    public String generateRefreshToken(UserDetails userDetails) {
+    public String generateRefreshToken(
+            UserDetails userDetails
+    ) {
         return buildToken(new HashMap<>(), userDetails, refreshExpiration);
     }
 
@@ -79,43 +67,42 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) 
-                && !isTokenExpired(token) 
-                && !isTokenBlacklisted(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && !isTokenInvalidated(token);
+    }
+
+    public void invalidateToken(String token) {
+        invalidatedTokens.put(token, true);
     }
     
-    public boolean isTokenExpired(String token) {
+    public boolean isTokenInvalidated(String token) {
+        return invalidatedTokens.containsKey(token);
+    }
+
+    private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-    
-    public boolean isTokenBlacklisted(String token) {
-        return redisTemplate.hasKey("BL_" + token);
-    }
-    
-    public void blacklistToken(String token) {
-        Date expiration = extractExpiration(token);
-        long ttl = expiration.getTime() - System.currentTimeMillis();
-        if (ttl > 0) {
-            redisTemplate.opsForValue().set("BL_" + token, "blacklisted", ttl, TimeUnit.MILLISECONDS);
-        }
-    }
 
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(signingKey)
+                .setSigningKey(getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    private Key getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 } 

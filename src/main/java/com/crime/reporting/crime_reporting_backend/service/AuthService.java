@@ -1,8 +1,8 @@
 package com.crime.reporting.crime_reporting_backend.service;
 
-import com.crime.reporting.crime_reporting_backend.dto.AuthRequest;
-import com.crime.reporting.crime_reporting_backend.dto.AuthResponse;
-import com.crime.reporting.crime_reporting_backend.dto.UserRegistrationRequest;
+import com.crime.reporting.crime_reporting_backend.dto.request.*;
+import com.crime.reporting.crime_reporting_backend.dto.response.AuthResponse;
+import com.crime.reporting.crime_reporting_backend.dto.response.TwoFactorAuthSetupResponse;
 import com.crime.reporting.crime_reporting_backend.entity.Role;
 import com.crime.reporting.crime_reporting_backend.entity.User;
 import com.crime.reporting.crime_reporting_backend.repository.UserRepository;
@@ -103,7 +103,7 @@ public class AuthService {
                 .build();
     }
 
-    public AuthResponse login(AuthRequest request) {
+    public AuthResponse login(LoginRequest request) {
         // Authenticate the user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -228,8 +228,6 @@ public class AuthService {
         }
     }
 
-    public record TwoFactorAuthSetupResponse(String secretKey, String qrCodeImageUri) {}
-
     public TwoFactorAuthSetupResponse generateMfaSecret(String email) {
         // Generate a new secret
         String secret = generateSecret();
@@ -248,24 +246,24 @@ public class AuthService {
         // Get the user from the repository
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
-        // Get the temporary secret from Redis
-        String secret = redisTemplate.opsForValue().get("MFA_SETUP_" + email);
-        if (secret == null) {
-            throw new RuntimeException("MFA setup expired, please try again");
+
+        // Get the cached secret
+        String cachedSecret = redisTemplate.opsForValue().get("MFA_SETUP_" + email);
+        if (cachedSecret == null) {
+            throw new RuntimeException("MFA setup session expired");
         }
-        
+
         // Verify the MFA code
-        if (!verifyCode(mfaCode, secret)) {
+        if (!verifyCode(mfaCode, cachedSecret)) {
             throw new RuntimeException("Invalid MFA code");
         }
-        
-        // Update the user with MFA enabled
+
+        // Enable MFA for the user
         user.setMfaEnabled(true);
-        user.setMfaSecret(secret);
+        user.setMfaSecret(cachedSecret);
         userRepository.save(user);
-        
-        // Remove the temporary secret from Redis
+
+        // Clear the cached secret
         redisTemplate.delete("MFA_SETUP_" + email);
     }
 
@@ -274,43 +272,40 @@ public class AuthService {
         // Get the user from the repository
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        
+
         // Verify the password
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        
-        // Update the user with MFA disabled
+
+        // Disable MFA for the user
         user.setMfaEnabled(false);
         user.setMfaSecret(null);
         userRepository.save(user);
     }
 
-    // Helper methods
     private String generateSecret() {
         SecretGenerator secretGenerator = new DefaultSecretGenerator();
         return secretGenerator.generate();
     }
 
     private String generateQrCodeImageUri(String email, String secret) {
-        QrData qrData = new QrData.Builder()
+        QrData data = new QrData.Builder()
                 .label(email)
                 .secret(secret)
                 .issuer("Crime Reporting System")
-                .algorithm(QrData.Algorithm.SHA1)
+                .algorithm(dev.samstevens.totp.code.HashingAlgorithm.SHA1)
                 .digits(6)
                 .period(30)
                 .build();
 
-        QrGenerator qrGenerator = new ZxingPngQrGenerator();
-        byte[] imageData;
+        QrGenerator generator = new ZxingPngQrGenerator();
         try {
-            imageData = qrGenerator.generate(qrData);
-        } catch (Exception e) {
-            throw new RuntimeException("Error generating QR code", e);
+            byte[] imageData = generator.generate(data);
+            return getDataUriForImage(imageData, generator.getImageMimeType());
+        } catch (dev.samstevens.totp.exceptions.QrGenerationException e) {
+            throw new RuntimeException("Failed to generate QR code", e);
         }
-
-        return getDataUriForImage(imageData, qrGenerator.getImageMimeType());
     }
 
     private boolean verifyCode(String code, String secret) {
@@ -322,11 +317,8 @@ public class AuthService {
 
     private Map<String, Object> createClaims(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("firstName", user.getFirstName());
-        claims.put("lastName", user.getLastName());
-        claims.put("email", user.getEmail());
+        claims.put("userId", user.getId());
         claims.put("role", user.getRole());
-        claims.put("mfaEnabled", user.isMfaEnabled());
         return claims;
     }
 } 

@@ -1,5 +1,6 @@
 package com.crime.reporting.crime_reporting_backend.dto.request;
 
+import com.crime.reporting.crime_reporting_backend.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -40,5 +41,10 @@ public class UserRegistrationRequest {
     private String phoneNumber;
 
     @Builder.Default
-    private boolean mfaEnabled = false;
+    private Role role = Role.CITIZEN;
+
+    private String address;
+
+    @Builder.Default
+    private boolean enableMfa = false;
 } 

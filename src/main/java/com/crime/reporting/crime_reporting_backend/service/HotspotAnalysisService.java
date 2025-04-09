@@ -2,8 +2,10 @@ package com.crime.reporting.crime_reporting_backend.service;
 
 import com.crime.reporting.crime_reporting_backend.dto.HotspotResponse;
 import com.crime.reporting.crime_reporting_backend.entity.Complaint;
+import com.crime.reporting.crime_reporting_backend.entity.ComplaintStatus;
 import com.crime.reporting.crime_reporting_backend.repository.ComplaintRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,13 @@ public class HotspotAnalysisService {
      */
     public List<HotspotResponse> identifyHotspots(LocalDateTime startDate, LocalDateTime endDate, int minClusterSize) {
         // Fetch all complaints within the time period
-        List<Complaint> complaints = complaintRepository.findByCreatedAtBetween(startDate, endDate);
+        List<Complaint> complaints = complaintRepository.findComplaintsWithFilters(
+                null, // status
+                null, // crimeType
+                startDate,
+                endDate,
+                PageRequest.of(0, Integer.MAX_VALUE) // Get all complaints
+        ).getContent();
         
         // Skip if there are no complaints
         if (complaints.isEmpty()) {
