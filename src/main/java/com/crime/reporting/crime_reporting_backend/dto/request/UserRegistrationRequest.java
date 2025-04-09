@@ -10,6 +10,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -47,4 +51,15 @@ public class UserRegistrationRequest {
 
     @Builder.Default
     private boolean enableMfa = false;
+
+    private String profilePicture;
+    private LocalDate dateOfBirth;
+    private String gender;
+
+    private String emergencyContactName;
+    private String emergencyContactPhone;
+    private String emergencyContactRelation;
+
+    @Builder.Default
+    private Set<String> roles = new HashSet<>();
 } 

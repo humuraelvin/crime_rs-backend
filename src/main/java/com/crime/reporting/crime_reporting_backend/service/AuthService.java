@@ -19,7 +19,6 @@ import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.time.SystemTimeProvider;
 import dev.samstevens.totp.time.TimeProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,9 +27,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
@@ -43,7 +48,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final UserService userService;
+    private final MfaService mfaService;
+    
+    // Replace Redis with in-memory maps
+    private final Map<String, String> tokenBlacklist = new ConcurrentHashMap<>();
+    private final Map<String, String> mfaSetupSecrets = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Transactional
     public AuthResponse register(UserRegistrationRequest request) {
@@ -66,7 +77,7 @@ public class AuthService {
 
         // If MFA is enabled, generate a secret
         if (request.isEnableMfa()) {
-            user.setMfaSecret(generateSecret());
+            user.setMfaSecret(generateMfaSetupSecret(request.getEmail()));
             // Save the user
             User savedUser = userRepository.save(user);
 
@@ -134,7 +145,7 @@ public class AuthService {
 
         // If MFA is enabled and code was provided, verify it
         if (user.isMfaEnabled() && request.getMfaCode() != null) {
-            if (!verifyCode(request.getMfaCode(), user.getMfaSecret())) {
+            if (!verifyMfaSetup(request.getEmail(), request.getMfaCode())) {
                 throw new RuntimeException("Invalid MFA code");
             }
         }
@@ -194,7 +205,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
         // Verify the MFA code
-        if (!verifyCode(mfaCode, user.getMfaSecret())) {
+        if (!verifyMfaSetup(email, mfaCode)) {
             throw new RuntimeException("Invalid MFA code");
         }
         
@@ -216,72 +227,49 @@ public class AuthService {
                 .build();
     }
 
-    public void logout(String token) {
-        // Add token to blacklist in Redis with expiration
+    public void revokeToken(String token) {
         String email = jwtService.extractUsername(token);
-        Long expiration = jwtService.extractExpiration(token).getTime();
-        Long now = System.currentTimeMillis();
-        Long ttl = expiration - now;
+        long ttl = jwtService.getExpirationTime(token) - System.currentTimeMillis();
         
         if (ttl > 0) {
-            redisTemplate.opsForValue().set("BL_" + token, email, ttl, TimeUnit.MILLISECONDS);
+            // Add token to blacklist with expiration
+            tokenBlacklist.put("BL_" + token, email);
+            
+            // Schedule removal from blacklist after token expiration
+            scheduler.schedule(() -> tokenBlacklist.remove("BL_" + token), ttl, TimeUnit.MILLISECONDS);
         }
     }
 
-    public TwoFactorAuthSetupResponse generateMfaSecret(String email) {
-        // Generate a new secret
-        String secret = generateSecret();
+    public String generateMfaSetupSecret(String email) {
+        String secret = mfaService.generateSecret();
         
-        // Generate QR code
-        String qrCodeImageUri = generateQrCodeImageUri(email, secret);
+        // Store in memory with expiration (10 minutes)
+        mfaSetupSecrets.put("MFA_SETUP_" + email, secret);
         
-        // Cache the secret temporarily until the user completes setup
-        redisTemplate.opsForValue().set("MFA_SETUP_" + email, secret, 10, TimeUnit.MINUTES);
+        // Schedule removal after 10 minutes
+        scheduler.schedule(() -> mfaSetupSecrets.remove("MFA_SETUP_" + email), 10, TimeUnit.MINUTES);
         
-        return new TwoFactorAuthSetupResponse(secret, qrCodeImageUri);
+        return secret;
     }
 
-    @Transactional
-    public void enableMfa(String email, String mfaCode) {
-        // Get the user from the repository
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Get the cached secret
-        String cachedSecret = redisTemplate.opsForValue().get("MFA_SETUP_" + email);
+    public boolean verifyMfaSetup(String email, String code) {
+        String cachedSecret = mfaSetupSecrets.get("MFA_SETUP_" + email);
+        
         if (cachedSecret == null) {
-            throw new RuntimeException("MFA setup session expired");
+            throw new IllegalStateException("MFA setup has expired. Please restart the setup process.");
         }
-
-        // Verify the MFA code
-        if (!verifyCode(mfaCode, cachedSecret)) {
-            throw new RuntimeException("Invalid MFA code");
+        
+        boolean isValid = mfaService.validateTotp(cachedSecret, code);
+        
+        if (isValid) {
+            // Remove from temporary cache
+            mfaSetupSecrets.remove("MFA_SETUP_" + email);
+            
+            // Update user with the secret
+            userService.enableMfa(email, cachedSecret);
         }
-
-        // Enable MFA for the user
-        user.setMfaEnabled(true);
-        user.setMfaSecret(cachedSecret);
-        userRepository.save(user);
-
-        // Clear the cached secret
-        redisTemplate.delete("MFA_SETUP_" + email);
-    }
-
-    @Transactional
-    public void disableMfa(String email, String password) {
-        // Get the user from the repository
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Verify the password
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
-        }
-
-        // Disable MFA for the user
-        user.setMfaEnabled(false);
-        user.setMfaSecret(null);
-        userRepository.save(user);
+        
+        return isValid;
     }
 
     private String generateSecret() {

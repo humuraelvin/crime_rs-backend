@@ -91,6 +91,15 @@ public class JwtService {
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
+    
+    /**
+     * Gets the expiration time in milliseconds for a token
+     * @param token the JWT token
+     * @return the expiration time in milliseconds
+     */
+    public long getExpirationTime(String token) {
+        return extractExpiration(token).getTime();
+    }
 
     private Claims extractAllClaims(String token) {
         return Jwts
