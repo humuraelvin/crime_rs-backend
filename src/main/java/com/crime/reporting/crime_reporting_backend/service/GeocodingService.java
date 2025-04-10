@@ -1,80 +1,41 @@
 package com.crime.reporting.crime_reporting_backend.service;
 
-import com.google.maps.GeoApiContext;
-import com.google.maps.GeocodingApi;
-import com.google.maps.model.GeocodingResult;
-import com.google.maps.model.LatLng;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.PostConstruct;
-
 /**
- * Service for handling geocoding operations using Google Maps API.
+ * Simple service for handling coordinates. Does not use external APIs.
  */
 @Service
 public class GeocodingService {
     
     private static final Logger logger = LoggerFactory.getLogger(GeocodingService.class);
     
-    @Value("${google.maps.api-key}")
-    private String apiKey;
-    
-    private GeoApiContext context;
-    
-    @PostConstruct
-    public void init() {
-        context = new GeoApiContext.Builder()
-                .apiKey(apiKey)
-                .build();
-    }
-    
     /**
-     * Geocodes an address string to latitude and longitude coordinates.
+     * A placeholder method that would normally geocode an address.
+     * Since we're not using Google Maps API, this simply returns null.
      * 
-     * @param address The address to geocode
-     * @return Coordinates object containing latitude and longitude, or null if geocoding fails
+     * @param address The address string
+     * @return null (no geocoding without API)
      */
     public Coordinates geocodeAddress(String address) {
-        if (address == null || address.trim().isEmpty()) {
-            return null;
-        }
-        
-        try {
-            GeocodingResult[] results = GeocodingApi.geocode(context, address).await();
-            
-            if (results.length > 0) {
-                LatLng location = results[0].geometry.location;
-                return new Coordinates(location.lat, location.lng);
-            }
-        } catch (Exception e) {
-            logger.error("Error geocoding address: {}", address, e);
-        }
-        
+        logger.info("Geocoding is disabled. Address: {}", address);
         return null;
     }
     
     /**
-     * Reverse geocodes coordinates to an address string.
+     * A placeholder method that would normally reverse geocode coordinates.
+     * Since we're not using Google Maps API, this simply returns the coordinates as a string.
      * 
      * @param latitude The latitude coordinate
      * @param longitude The longitude coordinate
-     * @return Address string, or null if reverse geocoding fails
+     * @return A string representation of the coordinates
      */
     public String reverseGeocode(double latitude, double longitude) {
-        try {
-            GeocodingResult[] results = GeocodingApi.reverseGeocode(context, new LatLng(latitude, longitude)).await();
-            
-            if (results.length > 0) {
-                return results[0].formattedAddress;
-            }
-        } catch (Exception e) {
-            logger.error("Error reverse geocoding coordinates: {}, {}", latitude, longitude, e);
-        }
-        
-        return null;
+        String coordString = String.format("Lat: %.6f, Lng: %.6f", latitude, longitude);
+        logger.info("Reverse geocoding is disabled. Returning coordinate string: {}", coordString);
+        return coordString;
     }
     
     /**

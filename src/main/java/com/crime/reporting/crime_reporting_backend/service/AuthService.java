@@ -240,6 +240,66 @@ public class AuthService {
         }
     }
 
+    public void logout(String token) {
+        revokeToken(token);
+    }
+
+    public TwoFactorAuthSetupResponse generateMfaSecret(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        String secret = mfaService.generateSecret();
+        String qrCodeImageUri = mfaService.generateQrCodeImageUri(email, secret);
+        
+        // Store in memory temporarily until confirmed
+        mfaSetupSecrets.put("MFA_SETUP_" + email, secret);
+        
+        // Schedule removal after 10 minutes
+        scheduler.schedule(() -> mfaSetupSecrets.remove("MFA_SETUP_" + email), 10, TimeUnit.MINUTES);
+        
+        return TwoFactorAuthSetupResponse.builder()
+                .secretKey(secret)
+                .qrCodeImageUri(qrCodeImageUri)
+                .build();
+    }
+    
+    public void enableMfa(String email, String mfaCode) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        String secretKey = mfaSetupSecrets.get("MFA_SETUP_" + email);
+        if (secretKey == null) {
+            throw new RuntimeException("MFA setup expired. Please try again.");
+        }
+        
+        if (!mfaService.validateTotp(secretKey, mfaCode)) {
+            throw new RuntimeException("Invalid MFA code");
+        }
+        
+        // Update user with MFA enabled and save the secret
+        user.setMfaEnabled(true);
+        user.setMfaSecret(secretKey);
+        userRepository.save(user);
+        
+        // Clean up the temporary secret
+        mfaSetupSecrets.remove("MFA_SETUP_" + email);
+    }
+    
+    public void disableMfa(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // Verify password before disabling MFA
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+        
+        // Update user with MFA disabled
+        user.setMfaEnabled(false);
+        user.setMfaSecret(null);
+        userRepository.save(user);
+    }
+
     public String generateMfaSetupSecret(String email) {
         String secret = mfaService.generateSecret();
         

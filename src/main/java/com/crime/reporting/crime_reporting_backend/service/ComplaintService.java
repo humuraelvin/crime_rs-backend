@@ -45,8 +45,10 @@ public class ComplaintService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // If location string is provided but no coordinates, try to geocode
+        // Geocoding is now optional - it will always return null
+        // but we keep the code structure to maintain compatibility
         if (request.getLocation() != null && request.getLatitude() == null && request.getLongitude() == null) {
+            // This will now return null, which is fine
             var coordinates = geocodingService.geocodeAddress(request.getLocation());
             
             if (coordinates != null) {

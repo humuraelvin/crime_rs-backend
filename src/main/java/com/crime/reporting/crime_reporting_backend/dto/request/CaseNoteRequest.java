@@ -14,9 +14,12 @@ public class CaseNoteRequest {
     @NotBlank
     private String content;
     
-    @Builder.Default
-    private boolean isPrivate = false;
+    private boolean isPrivate;
     
     @NotBlank
     private String caseId;
+    
+    public static class CaseNoteRequestBuilder {
+        private boolean isPrivate = false;
+    }
 } 

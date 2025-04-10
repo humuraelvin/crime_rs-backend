@@ -38,7 +38,7 @@ public interface CaseFileRepository extends JpaRepository<CaseFile, Long> {
     @Query("SELECT COUNT(c) FROM CaseFile c WHERE c.status = :status")
     long countByStatus(CaseStatus status);
     
-    @Query("SELECT AVG(DATEDIFF(c.closedAt, c.createdAt)) FROM CaseFile c WHERE c.status = 'CLOSED'")
+    @Query(value = "SELECT AVG(EXTRACT(EPOCH FROM (closed_at - created_at))/86400) FROM case_files WHERE status = 'CLOSED' AND closed_at IS NOT NULL", nativeQuery = true)
     Double getAverageResolutionTime();
     
     @Query("SELECT c.assignedOfficer.id, COUNT(c) FROM CaseFile c GROUP BY c.assignedOfficer.id")

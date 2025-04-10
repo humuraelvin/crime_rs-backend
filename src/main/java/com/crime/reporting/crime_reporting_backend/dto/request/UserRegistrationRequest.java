@@ -44,13 +44,11 @@ public class UserRegistrationRequest {
     @Pattern(regexp = "^\\+?[1-9]\\d{1,14}$")
     private String phoneNumber;
 
-    @Builder.Default
-    private Role role = Role.CITIZEN;
+    private Role role;
 
     private String address;
 
-    @Builder.Default
-    private boolean enableMfa = false;
+    private boolean enableMfa;
 
     private String profilePicture;
     private LocalDate dateOfBirth;
@@ -60,6 +58,11 @@ public class UserRegistrationRequest {
     private String emergencyContactPhone;
     private String emergencyContactRelation;
 
-    @Builder.Default
-    private Set<String> roles = new HashSet<>();
+    private Set<String> roles;
+    
+    public static class UserRegistrationRequestBuilder {
+        private Role role = Role.CITIZEN;
+        private boolean enableMfa = false;
+        private Set<String> roles = new HashSet<>();
+    }
 } 

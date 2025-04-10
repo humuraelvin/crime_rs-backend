@@ -14,8 +14,7 @@ public class WitnessStatementRequest {
     @NotBlank
     private String statement;
     
-    @Builder.Default
-    private boolean anonymous = false;
+    private boolean anonymous;
     
     @NotBlank
     private String caseId;
@@ -25,4 +24,8 @@ public class WitnessStatementRequest {
     
     @NotBlank
     private String witnessContact;
+    
+    public static class WitnessStatementRequestBuilder {
+        private boolean anonymous = false;
+    }
 } 
