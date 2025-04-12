@@ -2,10 +2,12 @@ package com.crime.reporting.crime_reporting_backend.controller;
 
 import com.crime.reporting.crime_reporting_backend.dto.ComplaintRequest;
 import com.crime.reporting.crime_reporting_backend.dto.ComplaintResponse;
+import com.crime.reporting.crime_reporting_backend.dto.EvidenceResponse;
 import com.crime.reporting.crime_reporting_backend.entity.ComplaintStatus;
 import com.crime.reporting.crime_reporting_backend.entity.CrimeType;
 import com.crime.reporting.crime_reporting_backend.entity.User;
 import com.crime.reporting.crime_reporting_backend.service.ComplaintService;
+import com.crime.reporting.crime_reporting_backend.service.EvidenceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,11 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,6 +32,7 @@ import java.util.List;
 public class ComplaintController {
 
     private final ComplaintService complaintService;
+    private final EvidenceService evidenceService;
 
     @PostMapping
     public ResponseEntity<ComplaintResponse> createComplaint(
@@ -34,6 +40,32 @@ public class ComplaintController {
             @AuthenticationPrincipal User currentUser) {
         request.setUserId(currentUser.getId());
         return new ResponseEntity<>(complaintService.createComplaint(request), HttpStatus.CREATED);
+    }
+    
+    @PostMapping(value = "/with-evidence", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ComplaintResponse> createComplaintWithEvidence(
+            @RequestPart("type") String type,
+            @RequestPart("description") String description,
+            @RequestPart("location") String location,
+            @RequestPart(value = "priority", required = false) String priority,
+            @RequestPart(value = "files", required = false) List<MultipartFile> files,
+            @AuthenticationPrincipal User currentUser) {
+        try {
+            ComplaintRequest request = new ComplaintRequest();
+            request.setCrimeType(CrimeType.valueOf(type));
+            request.setDescription(description);
+            request.setLocation(location);
+            // Priority is now calculated automatically by the AiPrioritizationService
+            // The manual priority parameter is ignored
+            request.setUserId(currentUser.getId());
+            
+            return new ResponseEntity<>(
+                complaintService.createComplaintWithFiles(request, files), 
+                HttpStatus.CREATED
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/{id}")
@@ -63,6 +95,20 @@ public class ComplaintController {
             @PathVariable Long id,
             @RequestParam ComplaintStatus status) {
         return ResponseEntity.ok(complaintService.updateComplaintStatus(id, status));
+    }
+    
+    @PostMapping(value = "/upload-evidence", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<EvidenceResponse>> uploadEvidence(
+            @RequestParam("files") List<MultipartFile> files,
+            @RequestParam("complaintId") Long complaintId,
+            @AuthenticationPrincipal User currentUser) {
+        try {
+            List<EvidenceResponse> uploadedFiles = evidenceService.uploadEvidenceFiles(
+                    files, complaintId, currentUser.getId());
+            return new ResponseEntity<>(uploadedFiles, HttpStatus.CREATED);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/stats/by-status")

@@ -42,12 +42,6 @@ public class Complaint {
     private LocalDateTime dateLastUpdated;
     
     @Column
-    private Double latitude;
-    
-    @Column
-    private Double longitude;
-    
-    @Column
     private String location;
     
     @Column

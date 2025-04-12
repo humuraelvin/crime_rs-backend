@@ -39,11 +39,15 @@ public class HotspotAnalysisService {
      */
     public List<HotspotResponse> identifyHotspots(LocalDateTime startDate, LocalDateTime endDate, int minClusterSize) {
         // Fetch all complaints within the time period
+        // Convert dates to strings for the repository method
+        String startDateStr = startDate != null ? startDate.toString() : null;
+        String endDateStr = endDate != null ? endDate.toString() : null;
+        
         List<Complaint> complaints = complaintRepository.findComplaintsWithFilters(
                 null, // status
                 null, // crimeType
-                startDate,
-                endDate,
+                startDateStr,
+                endDateStr,
                 PageRequest.of(0, Integer.MAX_VALUE) // Get all complaints
         ).getContent();
         
@@ -114,19 +118,14 @@ public class HotspotAnalysisService {
                 continue;
             }
             
-            // Calculate distance between complaints
-            double distance = calculateDistanceKm(
-                centerComplaint.getLatitude(), centerComplaint.getLongitude(), 
-                candidate.getLatitude(), candidate.getLongitude()
-            );
+            // Without geographic coordinates, simply check if locations match
+            boolean isSameLocation = centerComplaint.getLocation() != null && 
+                                    centerComplaint.getLocation().equals(candidate.getLocation());
             
-            // If within cluster radius, add to cluster and recursively expand
-            if (distance <= CLUSTER_RADIUS_KM) {
+            // If in the same location, add to cluster
+            if (isSameLocation) {
                 cluster.add(candidate);
                 processed.put(candidate.getId(), true);
-                
-                // Optional: recursive expansion for density-based clustering
-                // expandCluster(candidate, allComplaints, cluster, processed);
             }
         }
     }
@@ -138,17 +137,9 @@ public class HotspotAnalysisService {
      * @return Hotspot response with details about the cluster
      */
     private HotspotResponse convertClusterToHotspot(List<Complaint> cluster) {
-        // Calculate centroid (average position) of the cluster
-        double totalLat = 0;
-        double totalLng = 0;
-        
-        for (Complaint complaint : cluster) {
-            totalLat += complaint.getLatitude();
-            totalLng += complaint.getLongitude();
-        }
-        
-        double centerLat = totalLat / cluster.size();
-        double centerLng = totalLng / cluster.size();
+        // Use a fixed position for each location-based cluster (this would be replaced with actual geocoding in production)
+        double dummyLat = 0.0;
+        double dummyLng = 0.0;
         
         // Map the crime types in the cluster
         Map<String, Long> crimeTypeCounts = cluster.stream()
@@ -170,46 +161,14 @@ public class HotspotAnalysisService {
                 .orElse(0);
         
         return new HotspotResponse(
-                centerLat,
-                centerLng,
+                dummyLat,
+                dummyLng,
                 cluster.size(),
                 dominantCrimeType,
                 crimeTypeCounts,
                 avgSeverity,
                 CLUSTER_RADIUS_KM
         );
-    }
-    
-    /**
-     * Calculates the distance between two points in kilometers using the Haversine formula
-     * 
-     * @param lat1 Latitude of first point
-     * @param lon1 Longitude of first point
-     * @param lat2 Latitude of second point
-     * @param lon2 Longitude of second point
-     * @return Distance in kilometers
-     */
-    private double calculateDistanceKm(double lat1, double lon1, double lat2, double lon2) {
-        // Radius of the Earth in kilometers
-        final double EARTH_RADIUS = 6371.0;
-        
-        // Convert coordinates from degrees to radians
-        double lat1Rad = Math.toRadians(lat1);
-        double lon1Rad = Math.toRadians(lon1);
-        double lat2Rad = Math.toRadians(lat2);
-        double lon2Rad = Math.toRadians(lon2);
-        
-        // Calculate differences
-        double latDiff = lat2Rad - lat1Rad;
-        double lonDiff = lon2Rad - lon1Rad;
-        
-        // Haversine formula
-        double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
-                   Math.cos(lat1Rad) * Math.cos(lat2Rad) *
-                   Math.sin(lonDiff / 2) * Math.sin(lonDiff / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        
-        return EARTH_RADIUS * c;
     }
 
     public Map<String, Long> getCrimeHotspots() {

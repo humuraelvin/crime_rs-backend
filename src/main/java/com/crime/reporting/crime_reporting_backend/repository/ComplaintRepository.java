@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
@@ -21,18 +22,27 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     Page<Complaint> findByStatus(ComplaintStatus status, Pageable pageable);
     List<Complaint> findByCrimeType(CrimeType crimeType);
     
-    @Query("SELECT c FROM Complaint c WHERE " +
-            "(:status IS NULL OR c.status = :status) AND " +
-            "(:crimeType IS NULL OR c.crimeType = :crimeType) AND " +
-            "(:startDate IS NULL OR c.dateFiled >= :startDate) AND " +
-            "(:endDate IS NULL OR c.dateFiled <= :endDate)")
+    @Query(value = "SELECT * FROM complaints c WHERE " +
+            "(:status IS NULL OR c.status = :status\\:\\:VARCHAR) AND " +
+            "(:crimeType IS NULL OR c.crime_type = :crimeType\\:\\:VARCHAR) AND " +
+            "(:startDate IS NULL OR c.date_filed >= :startDate\\:\\:TIMESTAMP) AND " +
+            "(:endDate IS NULL OR c.date_filed <= :endDate\\:\\:TIMESTAMP)", 
+            nativeQuery = true,
+            countQuery = "SELECT COUNT(*) FROM complaints c WHERE " +
+            "(:status IS NULL OR c.status = :status\\:\\:VARCHAR) AND " +
+            "(:crimeType IS NULL OR c.crime_type = :crimeType\\:\\:VARCHAR) AND " +
+            "(:startDate IS NULL OR c.date_filed >= :startDate\\:\\:TIMESTAMP) AND " +
+            "(:endDate IS NULL OR c.date_filed <= :endDate\\:\\:TIMESTAMP)")
     Page<Complaint> findComplaintsWithFilters(
-            ComplaintStatus status,
-            CrimeType crimeType,
-            LocalDateTime startDate,
-            LocalDateTime endDate,
+            String status,
+            String crimeType,
+            String startDate,
+            String endDate,
             Pageable pageable
     );
+    
+    @Query("SELECT c FROM Complaint c LEFT JOIN FETCH c.evidences WHERE c.id = :id")
+    Optional<Complaint> findByIdWithEvidences(Long id);
     
     @Query("SELECT COUNT(c) FROM Complaint c WHERE c.status = :status")
     long countByStatus(ComplaintStatus status);

@@ -9,6 +9,8 @@ import com.crime.reporting.crime_reporting_backend.dto.EvidenceResponse;
 import com.crime.reporting.crime_reporting_backend.entity.Complaint;
 import com.crime.reporting.crime_reporting_backend.entity.ComplaintStatus;
 import com.crime.reporting.crime_reporting_backend.entity.CrimeType;
+import com.crime.reporting.crime_reporting_backend.entity.Evidence;
+import com.crime.reporting.crime_reporting_backend.entity.EvidenceType;
 import com.crime.reporting.crime_reporting_backend.entity.User;
 import com.crime.reporting.crime_reporting_backend.repository.CaseFileRepository;
 import com.crime.reporting.crime_reporting_backend.repository.ComplaintRepository;
@@ -16,6 +18,8 @@ import com.crime.reporting.crime_reporting_backend.repository.EvidenceRepository
 import com.crime.reporting.crime_reporting_backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.LazyInitializationException;
+import org.hibernate.HibernateException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -23,7 +27,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,31 +45,18 @@ public class ComplaintService {
     private final CaseFileRepository caseFileRepository;
     private final AiPrioritizationService aiPrioritizationService;
     private final GeocodingService geocodingService;
+    private final FileStorageService fileStorageService;
 
     @Transactional
     public ComplaintResponse createComplaint(ComplaintRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        // Geocoding is now optional - it will always return null
-        // but we keep the code structure to maintain compatibility
-        if (request.getLocation() != null && request.getLatitude() == null && request.getLongitude() == null) {
-            // This will now return null, which is fine
-            var coordinates = geocodingService.geocodeAddress(request.getLocation());
-            
-            if (coordinates != null) {
-                request.setLatitude(coordinates.latitude());
-                request.setLongitude(coordinates.longitude());
-            }
-        }
-
         Complaint complaint = Complaint.builder()
                 .user(user)
                 .crimeType(request.getCrimeType())
                 .description(request.getDescription())
                 .status(ComplaintStatus.SUBMITTED)
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
                 .location(request.getLocation())
                 .build();
 
@@ -76,12 +69,75 @@ public class ComplaintService {
         
         return mapToComplaintResponse(savedComplaint);
     }
+    
+    @Transactional
+    public ComplaintResponse createComplaintWithFiles(ComplaintRequest request, List<MultipartFile> files) {
+        ComplaintResponse complaintResponse = createComplaint(request);
+        if (files != null && !files.isEmpty()) {
+            try {
+                User user = userRepository.findById(request.getUserId())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                
+                Complaint complaint = complaintRepository.findById(complaintResponse.getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Complaint not found"));
+                
+                List<String> fileUrls = fileStorageService.storeFiles(files);
+                
+                for (int i = 0; i < files.size(); i++) {
+                    MultipartFile file = files.get(i);
+                    String fileUrl = fileUrls.get(i);
+                    
+                    // Determine evidence type based on content type
+                    EvidenceType evidenceType = determineEvidenceType(file.getContentType());
+                    
+                    Evidence evidence = Evidence.builder()
+                            .complaint(complaint)
+                            .type(evidenceType)
+                            .fileName(file.getOriginalFilename())
+                            .fileUrl(fileUrl)
+                            .fileContentType(file.getContentType())
+                            .fileSize(file.getSize())
+                            .uploadedBy(user)
+                            .build();
+                    
+                    evidenceRepository.save(evidence);
+                }
+                
+                // Get updated complaint with evidence
+                return getComplaintById(complaintResponse.getId());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to store files", e);
+            }
+        }
+        return complaintResponse;
+    }
+    
+    private EvidenceType determineEvidenceType(String contentType) {
+        if (contentType == null) {
+            return EvidenceType.OTHER;
+        }
+        
+        if (contentType.startsWith("image/")) {
+            return EvidenceType.IMAGE;
+        } else if (contentType.startsWith("video/")) {
+            return EvidenceType.VIDEO;
+        } else if (contentType.startsWith("audio/")) {
+            return EvidenceType.AUDIO;
+        } else if (contentType.equals("application/pdf") || 
+                  contentType.equals("application/msword") || 
+                  contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+                  contentType.equals("text/plain")) {
+            return EvidenceType.DOCUMENT;
+        } else {
+            return EvidenceType.OTHER;
+        }
+    }
 
     @Cacheable(value = "complaints", key = "#id")
     public ComplaintResponse getComplaintById(Long id) {
-        Complaint complaint = complaintRepository.findById(id)
+        Complaint complaint = complaintRepository.findByIdWithEvidences(id)
                 .orElseThrow(() -> new EntityNotFoundException("Complaint not found"));
-        return mapToComplaintResponse(complaint);
+        return mapToComplaintResponseSafely(complaint);
     }
 
     @Cacheable(value = "complaints", keyGenerator = "complexKeyGenerator")
@@ -92,9 +148,98 @@ public class ComplaintService {
             LocalDateTime endDate,
             Pageable pageable
     ) {
+        // Convert enums to strings to avoid PostgreSQL casting issues
+        String statusStr = status != null ? status.name() : null;
+        String crimeTypeStr = crimeType != null ? crimeType.name() : null;
+        String startDateStr = startDate != null ? startDate.toString() : null;
+        String endDateStr = endDate != null ? endDate.toString() : null;
+        
         Page<Complaint> complaints = complaintRepository.findComplaintsWithFilters(
-                status, crimeType, startDate, endDate, pageable);
-        return complaints.map(this::mapToComplaintResponse);
+                statusStr, crimeTypeStr, startDateStr, endDateStr, pageable);
+        
+        // Safely map to response DTOs
+        return complaints.map(complaint -> {
+            try {
+                return mapToComplaintResponseSafely(complaint);
+            } catch (Exception e) {
+                // Log the error but continue processing other complaints
+                System.err.println("Error mapping complaint " + complaint.getId() + ": " + e.getMessage());
+                return createSimpleComplaintResponse(complaint);
+            }
+        });
+    }
+    
+    /**
+     * Creates a simplified complaint response without relations that might cause LazyInitializationException
+     */
+    private ComplaintResponse createSimpleComplaintResponse(Complaint complaint) {
+        return ComplaintResponse.builder()
+                .id(complaint.getId())
+                .userId(complaint.getUser().getId())
+                .userName(complaint.getUser().getFirstName() + " " + complaint.getUser().getLastName())
+                .crimeType(complaint.getCrimeType())
+                .description(complaint.getDescription())
+                .status(complaint.getStatus())
+                .dateFiled(complaint.getDateFiled())
+                .dateLastUpdated(complaint.getDateLastUpdated())
+                .location(complaint.getLocation())
+                .priorityScore(complaint.getPriorityScore())
+                // Skip potentially lazy-loaded collections
+                .evidences(null)
+                .build();
+    }
+    
+    /**
+     * Safely maps a complaint to a response DTO, handling potential LazyInitializationException
+     */
+    private ComplaintResponse mapToComplaintResponseSafely(Complaint complaint) {
+        // Convert evidence entities to DTOs if present and accessible
+        List<EvidenceResponse> evidenceResponses = null;
+        
+        try {
+            if (complaint.getEvidences() != null) {
+                // This might throw LazyInitializationException if the session is closed
+                boolean hasEvidences = !complaint.getEvidences().isEmpty();
+                
+                if (hasEvidences) {
+                    evidenceResponses = complaint.getEvidences().stream()
+                            .map(evidence -> EvidenceResponse.builder()
+                                    .id(evidence.getId())
+                                    .complaintId(complaint.getId())
+                                    .type(evidence.getType())
+                                    .fileName(evidence.getFileName())
+                                    .fileUrl(evidence.getFileUrl())
+                                    .fileContentType(evidence.getFileContentType())
+                                    .fileSize(evidence.getFileSize())
+                                    .description(evidence.getDescription())
+                                    .metadata(evidence.getMetadata())
+                                    .uploadedAt(evidence.getUploadedAt())
+                                    .uploadedById(evidence.getUploadedBy().getId())
+                                    .uploadedByName(evidence.getUploadedBy().getFirstName() + " " + evidence.getUploadedBy().getLastName())
+                                    .build())
+                            .collect(Collectors.toList());
+                }
+            }
+        } catch (HibernateException e) {
+            // Log the error but continue with null evidences
+            System.err.println("Error accessing evidences for complaint " + complaint.getId() + ": " + e.getMessage());
+            evidenceResponses = null;
+        }
+        
+        // Build and return the response
+        return ComplaintResponse.builder()
+                .id(complaint.getId())
+                .userId(complaint.getUser().getId())
+                .userName(complaint.getUser().getFirstName() + " " + complaint.getUser().getLastName())
+                .crimeType(complaint.getCrimeType())
+                .description(complaint.getDescription())
+                .status(complaint.getStatus())
+                .dateFiled(complaint.getDateFiled())
+                .dateLastUpdated(complaint.getDateLastUpdated())
+                .location(complaint.getLocation())
+                .priorityScore(complaint.getPriorityScore())
+                .evidences(evidenceResponses)
+                .build();
     }
 
     @Cacheable(value = "userComplaints", key = "#userId")
@@ -196,8 +341,6 @@ public class ComplaintService {
                 .status(complaint.getStatus())
                 .dateFiled(complaint.getDateFiled())
                 .dateLastUpdated(complaint.getDateLastUpdated())
-                .latitude(complaint.getLatitude())
-                .longitude(complaint.getLongitude())
                 .location(complaint.getLocation())
                 .priorityScore(complaint.getPriorityScore())
                 .evidences(evidenceResponses)

@@ -42,7 +42,7 @@ public class AiPrioritizationService {
      * The score is based on several factors including:
      * - Crime type severity
      * - Keywords in the description
-     * - Geographical factors
+     * - Geographical factors based on location name (instead of coordinates)
      * 
      * @param complaint The complaint to score
      * @return Priority score (0-100), higher means more urgent
@@ -56,8 +56,8 @@ public class AiPrioritizationService {
         // Additional points from description analysis (0-15 points)
         score += analyzeDescription(complaint.getDescription());
         
-        // Additional points for geographic factors (0-10 points)
-        score += analyzeGeographicFactors(complaint.getLatitude(), complaint.getLongitude());
+        // Additional points for geographic factors based on location name (0-10 points)
+        score += analyzeGeographicFactors(complaint.getLocation());
         
         // Additional points for recency factors (0-5 points)
         // Newer complaints might get slightly higher priority
@@ -113,10 +113,14 @@ public class AiPrioritizationService {
         return false;
     }
     
-    private int analyzeGeographicFactors(Double latitude, Double longitude) {
+    private int analyzeGeographicFactors(String location) {
         // In a real system, this would check crime hotspots, proximity to schools, etc.
-        // For demonstration, we'll just return a value if coordinates are provided
-        if (latitude != null && longitude != null) {
+        // For demonstration, we'll just return a value if location is provided
+        if (location != null && !location.isEmpty()) {
+            // Higher priority for known high-crime areas - this would be more sophisticated in real system
+            if (containsAny(location.toLowerCase(), "downtown", "central", "market", "station", "terminal")) {
+                return 10; // Higher score for these potentially busier areas
+            }
             return 5; // We have location data, which helps prioritization
         }
         return 0;

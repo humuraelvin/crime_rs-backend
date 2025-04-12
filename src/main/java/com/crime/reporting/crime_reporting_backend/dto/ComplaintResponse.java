@@ -12,8 +12,8 @@ import java.util.List;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ComplaintResponse {
     private Long id;
     private Long userId;
@@ -23,8 +23,6 @@ public class ComplaintResponse {
     private ComplaintStatus status;
     private LocalDateTime dateFiled;
     private LocalDateTime dateLastUpdated;
-    private Double latitude;
-    private Double longitude;
     private String location;
     private Integer priorityScore;
     private List<EvidenceResponse> evidences;
