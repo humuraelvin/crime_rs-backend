@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,13 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     List<Complaint> findByStatus(ComplaintStatus status);
     Page<Complaint> findByStatus(ComplaintStatus status, Pageable pageable);
     List<Complaint> findByCrimeType(CrimeType crimeType);
+    
+    // Date-based queries
+    List<Complaint> findByDateFiledAfter(LocalDateTime date);
+    List<Complaint> findByDateFiledBetween(LocalDateTime startDate, LocalDateTime endDate);
+    
+    // Status-based queries
+    long countByStatusIn(Collection<ComplaintStatus> statuses);
     
     @Query(value = "SELECT * FROM complaints c WHERE " +
             "(:status IS NULL OR c.status = :status\\:\\:VARCHAR) AND " +
@@ -54,4 +62,9 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
             "WHERE c.dateFiled BETWEEN :startDate AND :endDate " +
             "GROUP BY FUNCTION('DATE', c.dateFiled) ORDER BY date")
     List<Object[]> countByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+    
+    @Query("SELECT MONTH(c.dateFiled), COUNT(c) FROM Complaint c " +
+            "WHERE YEAR(c.dateFiled) = YEAR(CURRENT_DATE) " +
+            "GROUP BY MONTH(c.dateFiled)")
+    List<Object[]> countByMonthForCurrentYear();
 } 
