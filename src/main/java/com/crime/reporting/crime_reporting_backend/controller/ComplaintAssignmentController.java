@@ -23,7 +23,7 @@ public class ComplaintAssignmentController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ComplaintDTO>> getAllComplaints() {
-        return ResponseEntity.ok(complaintService.getAllComplaints());
+        return ResponseEntity.ok(complaintService.getComplaintsByStatus(null));
     }
 
     @PostMapping("/{complaintId}/assign/{officerId}")

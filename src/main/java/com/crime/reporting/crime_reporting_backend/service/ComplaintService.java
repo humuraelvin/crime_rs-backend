@@ -3,6 +3,7 @@ package com.crime.reporting.crime_reporting_backend.service;
 import com.crime.reporting.crime_reporting_backend.controller.ComplaintController.CrimeTypeCountDTO;
 import com.crime.reporting.crime_reporting_backend.controller.ComplaintController.DateCountDTO;
 import com.crime.reporting.crime_reporting_backend.controller.ComplaintController.StatusCountDTO;
+import com.crime.reporting.crime_reporting_backend.dto.ComplaintDTO;
 import com.crime.reporting.crime_reporting_backend.dto.ComplaintRequest;
 import com.crime.reporting.crime_reporting_backend.dto.ComplaintResponse;
 import com.crime.reporting.crime_reporting_backend.dto.EvidenceResponse;
@@ -12,10 +13,12 @@ import com.crime.reporting.crime_reporting_backend.entity.CrimeType;
 import com.crime.reporting.crime_reporting_backend.entity.Evidence;
 import com.crime.reporting.crime_reporting_backend.entity.EvidenceType;
 import com.crime.reporting.crime_reporting_backend.entity.User;
+import com.crime.reporting.crime_reporting_backend.entity.PoliceOfficer;
 import com.crime.reporting.crime_reporting_backend.repository.CaseFileRepository;
 import com.crime.reporting.crime_reporting_backend.repository.ComplaintRepository;
 import com.crime.reporting.crime_reporting_backend.repository.EvidenceRepository;
 import com.crime.reporting.crime_reporting_backend.repository.UserRepository;
+import com.crime.reporting.crime_reporting_backend.repository.PoliceOfficerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.LazyInitializationException;
@@ -46,6 +49,7 @@ public class ComplaintService {
     private final AiPrioritizationService aiPrioritizationService;
     private final GeocodingService geocodingService;
     private final FileStorageService fileStorageService;
+    private final PoliceOfficerRepository policeOfficerRepository;
 
     @Transactional
     public ComplaintResponse createComplaint(ComplaintRequest request) {
@@ -357,13 +361,14 @@ public class ComplaintService {
         Complaint complaint = complaintRepository.findById(complaintId)
                 .orElseThrow(() -> new EntityNotFoundException("Complaint not found with id: " + complaintId));
         
-        User officer = userRepository.findById(officerId)
+        // Find the police officer by officer ID
+        PoliceOfficer officer = policeOfficerRepository.findById(officerId)
                 .orElseThrow(() -> new EntityNotFoundException("Police Officer not found with id: " + officerId));
         
-        // Update complaint with officer and change status
+        // Update complaint with officer and change status - use the officer directly, not the user
         complaint.setAssignedOfficer(officer);
         complaint.setStatus(ComplaintStatus.ASSIGNED);
-        complaint.setUpdatedAt(LocalDateTime.now());
+        complaint.setDateLastUpdated(LocalDateTime.now());
         
         // Save updated complaint
         complaintRepository.save(complaint);
@@ -391,7 +396,7 @@ public class ComplaintService {
             }
             // For other statuses (like RESOLVED, REJECTED, CLOSED), keep the current status
             
-            complaint.setUpdatedAt(LocalDateTime.now());
+            complaint.setDateLastUpdated(LocalDateTime.now());
             
             // Save updated complaint
             complaintRepository.save(complaint);
@@ -405,5 +410,63 @@ public class ComplaintService {
      * @param status the status to filter by
      * @return list of complaints with the specified status
      */
-    List<ComplaintDTO> getComplaintsByStatus(ComplaintStatus status);
+    public List<ComplaintDTO> getComplaintsByStatus(ComplaintStatus status) {
+        List<Complaint> complaints = complaintRepository.findByStatus(status);
+        return complaints.stream()
+                .map(this::mapToComplaintDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Maps a Complaint entity to a ComplaintDTO
+     */
+    private ComplaintDTO mapToComplaintDTO(Complaint complaint) {
+        ComplaintDTO dto = new ComplaintDTO();
+        dto.setId(complaint.getId());
+        // Check if title exists, otherwise set description as title
+        dto.setTitle(complaint.getDescription()); // Use description as title if title doesn't exist
+        dto.setDescription(complaint.getDescription());
+        dto.setLocation(complaint.getLocation());
+        dto.setStatus(complaint.getStatus());
+        
+        if(complaint.getDateFiled() != null) {
+            dto.setDateFiled(complaint.getDateFiled());
+        }
+        
+        if(complaint.getDateLastUpdated() != null) {
+            dto.setUpdatedAt(complaint.getDateLastUpdated());
+        }
+        
+        if(complaint.getCrimeType() != null) {
+            dto.setCrimeType(complaint.getCrimeType());
+        }
+        
+        // If incidentDate is not available, use null or some placeholder
+        dto.setIncidentDate(null);
+        
+        if(complaint.getUser() != null) {
+            dto.setUserId(complaint.getUser().getId());
+            dto.setUserName(complaint.getUser().getFirstName() + " " + complaint.getUser().getLastName());
+            dto.setUserContact(complaint.getUser().getEmail());
+        }
+        
+        if(complaint.getAssignedOfficer() != null) {
+            PoliceOfficer officer = complaint.getAssignedOfficer();
+            dto.setAssignedOfficerId(officer.getId());
+            
+            // Get the User associated with the PoliceOfficer to access firstName and lastName
+            if(officer.getUser() != null) {
+                User officerUser = officer.getUser();
+                dto.setAssignedOfficerName(officerUser.getFirstName() + " " + officerUser.getLastName());
+            } else {
+                // Fallback if user not available
+                dto.setAssignedOfficerName("Officer #" + officer.getId());
+            }
+        }
+        
+        // Set evidences to null to avoid the issue with EvidenceDTO
+        dto.setEvidences(null);
+        
+        return dto;
+    }
 } 
