@@ -22,9 +22,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countByRole(Role role);
     
     // User statistics
-    @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role AND MONTH(u.createdAt) = MONTH(CURRENT_DATE) AND YEAR(u.createdAt) = YEAR(CURRENT_DATE)")
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role " +
+           "AND FUNCTION('MONTH', u.createdAt) = FUNCTION('MONTH', CURRENT_DATE) " +
+           "AND FUNCTION('YEAR', u.createdAt) = FUNCTION('YEAR', CURRENT_DATE)")
     long countNewUsersByRoleThisMonth(Role role);
     
-    @Query("SELECT MONTH(u.createdAt), COUNT(u) FROM User u WHERE YEAR(u.createdAt) = YEAR(CURRENT_DATE) GROUP BY MONTH(u.createdAt)")
+    @Query("SELECT FUNCTION('MONTH', u.createdAt), COUNT(u) FROM User u " +
+           "WHERE FUNCTION('YEAR', u.createdAt) = FUNCTION('YEAR', CURRENT_DATE) " +
+           "GROUP BY FUNCTION('MONTH', u.createdAt)")
     List<Object[]> countUsersByMonth();
 } 

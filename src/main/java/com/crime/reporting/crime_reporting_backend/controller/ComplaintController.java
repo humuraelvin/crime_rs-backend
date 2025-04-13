@@ -24,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/complaints")
@@ -119,6 +121,20 @@ public class ComplaintController {
     @GetMapping("/stats/by-crime-type")
     public ResponseEntity<List<CrimeTypeCountDTO>> getComplaintCountsByCrimeType() {
         return ResponseEntity.ok(complaintService.getComplaintCountsByCrimeType());
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<Map<String, Object>> getAllStatistics() {
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("byStatus", complaintService.getComplaintCountsByStatus());
+        statistics.put("byCrimeType", complaintService.getComplaintCountsByCrimeType());
+        
+        // For trends, use the last 30 days by default
+        LocalDateTime endDate = LocalDateTime.now();
+        LocalDateTime startDate = endDate.minusDays(30);
+        statistics.put("trends", complaintService.getComplaintTrends(startDate, endDate));
+        
+        return ResponseEntity.ok(statistics);
     }
 
     @GetMapping("/stats/trends")

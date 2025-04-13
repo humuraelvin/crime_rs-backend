@@ -63,8 +63,8 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
             "GROUP BY FUNCTION('DATE', c.dateFiled) ORDER BY date")
     List<Object[]> countByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     
-    @Query("SELECT MONTH(c.dateFiled), COUNT(c) FROM Complaint c " +
-            "WHERE YEAR(c.dateFiled) = YEAR(CURRENT_DATE) " +
-            "GROUP BY MONTH(c.dateFiled)")
+    @Query("SELECT FUNCTION('MONTH', c.dateFiled), COUNT(c) FROM Complaint c " +
+            "WHERE FUNCTION('YEAR', c.dateFiled) = FUNCTION('YEAR', CURRENT_DATE) " +
+            "GROUP BY FUNCTION('MONTH', c.dateFiled)")
     List<Object[]> countByMonthForCurrentYear();
 } 

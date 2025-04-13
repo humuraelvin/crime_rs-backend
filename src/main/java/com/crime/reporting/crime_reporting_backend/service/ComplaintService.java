@@ -347,4 +347,63 @@ public class ComplaintService {
                 // CaseFile response would be added here if needed
                 .build();
     }
+
+    /**
+     * Assigns a complaint to a police officer
+     * @param complaintId the complaint ID
+     * @param officerId the officer ID
+     */
+    public void assignComplaintToOfficer(Long complaintId, Long officerId) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new EntityNotFoundException("Complaint not found with id: " + complaintId));
+        
+        User officer = userRepository.findById(officerId)
+                .orElseThrow(() -> new EntityNotFoundException("Police Officer not found with id: " + officerId));
+        
+        // Update complaint with officer and change status
+        complaint.setAssignedOfficer(officer);
+        complaint.setStatus(ComplaintStatus.ASSIGNED);
+        complaint.setUpdatedAt(LocalDateTime.now());
+        
+        // Save updated complaint
+        complaintRepository.save(complaint);
+    }
+
+    /**
+     * Unassigns a complaint from its officer
+     * @param complaintId the complaint ID
+     */
+    public void unassignComplaint(Long complaintId) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new EntityNotFoundException("Complaint not found with id: " + complaintId));
+        
+        // Only unassign if currently assigned
+        if (complaint.getAssignedOfficer() != null) {
+            // Update complaint by removing officer
+            complaint.setAssignedOfficer(null);
+            
+            // Set the status based on current status
+            if (complaint.getStatus() == ComplaintStatus.ASSIGNED || 
+                complaint.getStatus() == ComplaintStatus.INVESTIGATING || 
+                complaint.getStatus() == ComplaintStatus.PENDING_EVIDENCE) {
+                // If case is in active investigation, set it back to UNDER_REVIEW
+                complaint.setStatus(ComplaintStatus.UNDER_REVIEW);
+            }
+            // For other statuses (like RESOLVED, REJECTED, CLOSED), keep the current status
+            
+            complaint.setUpdatedAt(LocalDateTime.now());
+            
+            // Save updated complaint
+            complaintRepository.save(complaint);
+        } else {
+            throw new AccessDeniedException("Complaint is not currently assigned to any officer");
+        }
+    }
+
+    /**
+     * Gets complaints by status
+     * @param status the status to filter by
+     * @return list of complaints with the specified status
+     */
+    List<ComplaintDTO> getComplaintsByStatus(ComplaintStatus status);
 } 

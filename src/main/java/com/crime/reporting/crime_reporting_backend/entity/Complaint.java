@@ -53,6 +53,10 @@ public class Complaint {
     @OneToOne(mappedBy = "complaint", cascade = CascadeType.ALL)
     private CaseFile caseFile;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_officer_id")
+    private PoliceOfficer assignedOfficer;
+    
     @PrePersist
     protected void onCreate() {
         dateFiled = LocalDateTime.now();
