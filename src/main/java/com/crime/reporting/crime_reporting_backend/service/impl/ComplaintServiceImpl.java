@@ -283,6 +283,42 @@ public class ComplaintServiceImpl implements ComplaintService {
         return mapToDTO(updatedComplaint);
     }
     
+    /**
+     * Updates the status of a complaint with additional notes
+     * @param complaintId the ID of the complaint to update
+     * @param status the new status as a string
+     * @param notes optional notes about the status update
+     * @return the updated complaint data
+     */
+    @Transactional
+    public ComplaintDTO updateComplaintStatus(Long complaintId, String status, String notes) {
+        log.info("Updating complaint {} status to {} with notes", complaintId, status);
+        
+        ComplaintStatus complaintStatus;
+        try {
+            complaintStatus = ComplaintStatus.valueOf(status);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status: {}", status);
+            throw new IllegalArgumentException("Invalid status: " + status);
+        }
+        
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + complaintId));
+        
+        complaint.setStatus(complaintStatus);
+        complaint.setDateLastUpdated(LocalDateTime.now());
+        
+        // If notes are provided, add them as a comment
+        if (notes != null && !notes.trim().isEmpty()) {
+            // Add implementation to save notes as a comment if you have a comments entity
+            // For now, you can add to description or a separate notes field if available
+            // Example: complaint.setNotes(notes);
+        }
+        
+        Complaint updatedComplaint = complaintRepository.save(complaint);
+        return mapToDTO(updatedComplaint);
+    }
+    
     @Override
     @Transactional(readOnly = true)
     public List<StatusCountDTO> getComplaintCountsByStatus() {

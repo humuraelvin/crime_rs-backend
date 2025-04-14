@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/police")
@@ -40,7 +41,7 @@ public class PoliceOfficerController {
             String email = authentication.getName();
             UserResponse userResponse = userService.findByEmail(email);
             
-            // Even if the service method fails, we'll return a default response
+            // Get officer details
             PoliceOfficerDTO officerDTO;
             try {
                 officerDTO = policeOfficerService.getOfficerByUserId(userResponse.getId());
@@ -48,39 +49,71 @@ public class PoliceOfficerController {
                 log.error("Error fetching officer details for user ID: {}", userResponse.getId(), e);
                 // Create a basic DTO with user info
                 officerDTO = new PoliceOfficerDTO();
-                officerDTO.setBadgeNumber("PD12345");
-                officerDTO.setDepartmentName("Central Division");
-                officerDTO.setRank("Detective");
+                officerDTO.setBadgeNumber("Unknown");
+                officerDTO.setDepartmentName("Not Assigned");
+                officerDTO.setRank("Officer");
             }
             
-            // Example stats - replace with real data in production
-            Map<String, Object> stats = new HashMap<>();
-            stats.put("assignedComplaints", 8);
-            stats.put("pendingComplaints", 5);
-            stats.put("resolvedComplaints", 3);
-            stats.put("totalCases", 12);
-            stats.put("activeCases", 7);
-            stats.put("closedCases", 5);
-            stats.put("badgeNumber", officerDTO.getBadgeNumber());
-            stats.put("departmentName", officerDTO.getDepartmentName());
-            stats.put("rank", officerDTO.getRank());
-            
-            // Get recent complaints or return empty list if fails
-            List<ComplaintDTO> recentComplaints;
+            // Get complaints assigned to the officer
+            List<ComplaintDTO> assignedComplaints = new ArrayList<>();
             try {
                 if (officerDTO.getId() != null) {
-                    recentComplaints = complaintService.getComplaintsByPoliceOfficerId(officerDTO.getId());
-                    // Limit to 5 most recent complaints
-                    if (recentComplaints.size() > 5) {
-                        recentComplaints = recentComplaints.subList(0, 5);
-                    }
-                } else {
-                    recentComplaints = new ArrayList<>();
+                    assignedComplaints = complaintService.getComplaintsByPoliceOfficerId(officerDTO.getId());
                 }
             } catch (Exception e) {
                 log.error("Error fetching assigned complaints for officer ID: {}", officerDTO.getId(), e);
-                recentComplaints = new ArrayList<>();
             }
+            
+            // Calculate real statistics
+            int totalAssigned = assignedComplaints.size();
+            
+            // Count complaints by status
+            int pendingCount = 0;
+            int resolvedCount = 0;
+            int activeCount = 0;
+            int closedCount = 0;
+            
+            for (ComplaintDTO complaint : assignedComplaints) {
+                String status = complaint.getStatus();
+                if (status == null) continue;
+                
+                if (status.equals("ASSIGNED") || status.equals("PENDING") || status.equals("PENDING_EVIDENCE")) {
+                    pendingCount++;
+                } else if (status.equals("RESOLVED") || status.equals("CLOSED")) {
+                    resolvedCount++;
+                    closedCount++;
+                }
+                
+                if (status.equals("INVESTIGATING") || status.equals("UNDER_REVIEW") || 
+                    status.equals("ASSIGNED") || status.equals("PENDING") || 
+                    status.equals("PENDING_EVIDENCE")) {
+                    activeCount++;
+                }
+            }
+            
+            // Get 5 most recent complaints
+            List<ComplaintDTO> recentComplaints = assignedComplaints.stream()
+                .sorted((c1, c2) -> {
+                    if (c1.getDateLastUpdated() != null && c2.getDateLastUpdated() != null) {
+                        return c2.getDateLastUpdated().compareTo(c1.getDateLastUpdated());
+                    } else {
+                        return 0;
+                    }
+                })
+                .limit(5)
+                .collect(Collectors.toList());
+            
+            // Create response with real stats
+            Map<String, Object> stats = new HashMap<>();
+            stats.put("assignedComplaints", totalAssigned);
+            stats.put("pendingComplaints", pendingCount);
+            stats.put("resolvedComplaints", resolvedCount);
+            stats.put("totalCases", totalAssigned);
+            stats.put("activeCases", activeCount);
+            stats.put("closedCases", closedCount);
+            stats.put("badgeNumber", officerDTO.getBadgeNumber());
+            stats.put("departmentName", officerDTO.getDepartmentName());
+            stats.put("rank", officerDTO.getRank());
             stats.put("recentComplaints", recentComplaints);
             
             return ResponseEntity.ok(stats);
@@ -127,18 +160,34 @@ public class PoliceOfficerController {
         }
     }
     
-    @PostMapping("/complaints/{id}/status")
+    @PutMapping("/complaints/{id}/status")
     public ResponseEntity<ComplaintDTO> updateComplaintStatus(
             @PathVariable Long id,
-            @RequestParam String status,
-            @RequestParam(required = false) String notes,
+            @RequestBody Map<String, String> statusUpdate,
             Authentication authentication) {
+        
+        String status = statusUpdate.get("status");
+        String notes = statusUpdate.get("notes");
         
         log.info("Updating complaint status: id={}, status={}, user={}", id, status, authentication.getName());
         
         try {
-            // This endpoint needs to be updated to work with the new service implementation
-            return ResponseEntity.ok().build();
+            // Get the current user
+            String email = authentication.getName();
+            UserResponse userResponse = userService.findByEmail(email);
+            PoliceOfficerDTO officerDTO = policeOfficerService.getOfficerByUserId(userResponse.getId());
+            
+            // Validate that this complaint is assigned to this officer
+            ComplaintDTO complaint = complaintService.getComplaintById(id);
+            if (complaint == null || !complaint.getAssignedOfficerId().equals(officerDTO.getId())) {
+                log.warn("Unauthorized attempt to update complaint: officer {} tried to update complaint {}", 
+                         officerDTO.getId(), id);
+                return ResponseEntity.status(403).build();
+            }
+            
+            // Update the complaint status
+            ComplaintDTO updatedComplaint = complaintService.updateComplaintStatus(id, status, notes);
+            return ResponseEntity.ok(updatedComplaint);
         } catch (Exception e) {
             log.error("Error updating complaint status", e);
             return ResponseEntity.internalServerError().build();

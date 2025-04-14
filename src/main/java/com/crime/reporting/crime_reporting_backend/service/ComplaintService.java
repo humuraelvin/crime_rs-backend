@@ -126,12 +126,21 @@ public interface ComplaintService {
     ComplaintDTO unassignComplaint(Long complaintId);
     
     /**
-     * Updates the status of a complaint
+     * Updates a complaint's status
      * @param complaintId the ID of the complaint
      * @param status the new status
      * @return the updated complaint
      */
     ComplaintDTO updateComplaintStatus(Long complaintId, ComplaintStatus status);
+    
+    /**
+     * Updates a complaint's status with notes
+     * @param complaintId the ID of the complaint
+     * @param status the new status as string
+     * @param notes optional notes about the status update
+     * @return the updated complaint
+     */
+    ComplaintDTO updateComplaintStatus(Long complaintId, String status, String notes);
     
     /**
      * Gets count of complaints by status

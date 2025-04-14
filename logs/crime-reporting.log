@@ -876,3 +876,69 @@ Consider defining a bean of type 'com.crime.reporting.crime_reporting_backend.se
 2025-04-15T00:36:20.760+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.controller.AdminController       : Admin fetching all complaints with details
 2025-04-15T00:36:20.764+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching all complaints with details for admin
 2025-04-15T00:36:53.794+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.controller.AdminController       : Fetching all police officers
+2025-04-15T00:39:26.851+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.controller.AdminController       : Fetching paged departments
+2025-04-15T00:39:27.123+02:00  WARN 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-04-15T00:39:29.544+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.controller.AdminController       : Fetching all police officers
+2025-04-15T00:40:05.696+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.c.PoliceOfficerController        : Fetching police stats for user: keffar@crimereporting.com
+2025-04-15T00:40:05.698+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:40:05.704+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:40:05.720+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:40:05.760+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:44:47.724+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.c.PoliceOfficerController        : Fetching assigned complaints for user: keffar@crimereporting.com
+2025-04-15T00:44:47.726+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:44:47.731+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:44:47.751+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:44:47.764+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:45:01.795+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.c.PoliceOfficerController        : Fetching police stats for user: keffar@crimereporting.com
+2025-04-15T00:45:01.795+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:45:01.802+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:45:01.809+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:45:01.815+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:45:06.194+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.c.PoliceOfficerController        : Fetching assigned complaints for user: keffar@crimereporting.com
+2025-04-15T00:45:06.194+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:45:06.197+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:45:06.213+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:45:06.216+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:45:09.022+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.c.PoliceOfficerController        : Fetching police stats for user: keffar@crimereporting.com
+2025-04-15T00:45:09.022+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:45:09.025+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:45:09.031+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:45:09.039+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:48:12.512+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.c.PoliceOfficerController        : Fetching assigned complaints for user: keffar@crimereporting.com
+2025-04-15T00:48:12.537+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:48:12.544+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:48:12.599+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:48:12.636+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:48:15.208+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.c.PoliceOfficerController        : Fetching police stats for user: keffar@crimereporting.com
+2025-04-15T00:48:15.213+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:48:15.240+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:48:15.298+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:48:15.335+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:49:50.560+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.c.PoliceOfficerController        : Fetching police stats for user: keffar@crimereporting.com
+2025-04-15T00:49:50.587+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:49:50.595+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:49:50.675+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:49:50.712+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:50:53.006+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.c.PoliceOfficerController        : Fetching police stats for user: keffar@crimereporting.com
+2025-04-15T00:50:53.031+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:50:53.041+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:50:53.122+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:50:53.157+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T00:56:15.368+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.c.PoliceOfficerController        : Fetching assigned complaints for user: keffar@crimereporting.com
+2025-04-15T00:56:15.386+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T00:56:15.391+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T00:56:15.443+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T00:56:15.469+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T01:00:20.330+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.c.PoliceOfficerController        : Fetching assigned complaints for user: keffar@crimereporting.com
+2025-04-15T01:00:20.411+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T01:00:20.474+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T01:00:20.796+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T01:00:20.909+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
+2025-04-15T01:01:12.315+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.c.PoliceOfficerController        : Fetching assigned complaints for user: keffar@crimereporting.com
+2025-04-15T01:01:12.329+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.impl.UserServiceImpl     : Finding user by email: keffar@crimereporting.com
+2025-04-15T01:01:12.333+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.s.impl.PoliceOfficerServiceImpl  : Fetching police officer with user id: 26
+2025-04-15T01:01:12.370+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for police officer with ID: 24
+2025-04-15T01:01:12.397+02:00  INFO 158151 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.s.impl.ComplaintServiceImpl      : Found 0 complaints assigned to police officer ID: 24
