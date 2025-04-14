@@ -70,4 +70,10 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     
     @Query("SELECT COUNT(c) FROM Complaint c WHERE c.user.id = :userId")
     long countByUserId(Long userId);
+    
+    @Query("SELECT c FROM Complaint c LEFT JOIN FETCH c.evidences WHERE c.user = :user")
+    List<Complaint> findByUserWithEvidences(User user);
+    
+    @Query("SELECT c FROM Complaint c LEFT JOIN FETCH c.evidences WHERE c.user = :user")
+    Page<Complaint> findByUserWithEvidences(User user, Pageable pageable);
 } 

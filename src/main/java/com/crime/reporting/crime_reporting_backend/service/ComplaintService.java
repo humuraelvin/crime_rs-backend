@@ -21,6 +21,7 @@ import com.crime.reporting.crime_reporting_backend.repository.UserRepository;
 import com.crime.reporting.crime_reporting_backend.repository.PoliceOfficerRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.LazyInitializationException;
 import org.hibernate.HibernateException;
 import org.springframework.cache.annotation.CacheEvict;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ComplaintService {
 
     private final ComplaintRepository complaintRepository;
@@ -247,12 +249,21 @@ public class ComplaintService {
     }
 
     @Cacheable(value = "userComplaints", key = "#userId")
+    @Transactional(readOnly = true)
     public Page<ComplaintResponse> getComplaintsByUser(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Page<Complaint> complaints = complaintRepository.findByUser(user, pageable);
-        return complaints.map(this::mapToComplaintResponse);
+        try {
+            // Use the eager fetching query to avoid lazy loading issues
+            Page<Complaint> complaints = complaintRepository.findByUserWithEvidences(user, pageable);
+            return complaints.map(this::mapToComplaintResponse);
+        } catch (Exception e) {
+            log.error("Error fetching complaints for user {}: {}", userId, e.getMessage());
+            // Fallback to standard method if the custom query fails
+            Page<Complaint> complaints = complaintRepository.findByUser(user, pageable);
+            return complaints.map(this::mapToComplaintResponse);
+        }
     }
 
     @Transactional

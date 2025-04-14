@@ -10,6 +10,7 @@ import com.crime.reporting.crime_reporting_backend.service.ComplaintService;
 import com.crime.reporting.crime_reporting_backend.service.EvidenceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.crime.reporting.crime_reporting_backend.dto.ErrorResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -31,6 +33,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/complaints")
 @RequiredArgsConstructor
+@Slf4j
 public class ComplaintController {
 
     private final ComplaintService complaintService;
@@ -86,10 +89,22 @@ public class ComplaintController {
     }
 
     @GetMapping("/my-complaints")
-    public ResponseEntity<Page<ComplaintResponse>> getMyComplaints(
+    public ResponseEntity<?> getMyComplaints(
             @PageableDefault(size = 10) Pageable pageable,
             @AuthenticationPrincipal User currentUser) {
-        return ResponseEntity.ok(complaintService.getComplaintsByUser(currentUser.getId(), pageable));
+        try {
+            Page<ComplaintResponse> complaints = complaintService.getComplaintsByUser(currentUser.getId(), pageable);
+            return ResponseEntity.ok(complaints);
+        } catch (Exception e) {
+            log.error("Error fetching complaints for user {}: {}", currentUser.getId(), e.getMessage(), e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse(
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "Error fetching complaints: " + e.getMessage(),
+                            "/api/v1/complaints/my-complaints")
+                    );
+        }
     }
 
     @PutMapping("/{id}/status")
