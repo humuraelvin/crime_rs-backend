@@ -34,7 +34,7 @@ public class Department {
     @Column
     private String contactInfo;
     
-    @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private List<PoliceOfficer> officers;
     
     @CreationTimestamp

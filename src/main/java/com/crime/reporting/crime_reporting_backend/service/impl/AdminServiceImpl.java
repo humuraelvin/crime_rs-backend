@@ -93,7 +93,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public DepartmentResponse getDepartmentById(Long id) {
-        Department department = departmentRepository.findById(id)
+        Department department = departmentRepository.findByIdWithOfficers(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
         
         return mapToDepartmentResponse(department);
@@ -102,8 +102,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public List<DepartmentResponse> getAllDepartments() {
-        log.info("Getting all departments");
-        List<Department> departments = departmentRepository.findAll();
+        log.info("Getting all departments with officers");
+        List<Department> departments = departmentRepository.findAllWithOfficers();
         return departments.stream()
                 .map(this::mapToDepartmentResponse)
                 .collect(Collectors.toList());
@@ -124,11 +124,20 @@ public class AdminServiceImpl implements AdminService {
         log.info("Creating police officer with request: {}", request);
         log.info("Department ID from request: {}", request.getDepartmentId());
         
-        // Find department
-        Department department = departmentRepository.findById(request.getDepartmentId())
+        // Force fetch the department with explicit transaction to make sure it's loaded
+        Department department = null;
+        try {
+            department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
-        
-        log.info("Department found: id={}, name={}", department.getId(), department.getName());
+            
+            // Force initialization of department data
+            department.getId();
+            department.getName();
+            log.info("Department found and initialized: id={}, name={}", department.getId(), department.getName());
+        } catch (Exception e) {
+            log.error("Error fetching department: ", e);
+            throw new IllegalStateException("Could not load department with ID: " + request.getDepartmentId(), e);
+        }
         
         // Check if email is already in use
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -160,11 +169,13 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalStateException("Department cannot be null when creating an officer");
         }
         
-        // Create police officer
+        log.info("Creating officer with department: id={}, name={}", department.getId(), department.getName());
+        
+        // Create police officer with explicit department reference
         PoliceOfficer officer = PoliceOfficer.builder()
                 .user(savedUser)
                 .badgeNumber(request.getBadgeNumber())
-                .department(department)
+                .department(department) // This must not be null
                 .rank(request.getRank())
                 .specialization(request.getSpecialization())
                 .contactInfo(request.getContactInfo())
@@ -180,8 +191,10 @@ public class AdminServiceImpl implements AdminService {
         log.info("Officer built with department id: {}, badge number: {}", 
                 officer.getDepartment().getId(), officer.getBadgeNumber());
         
+        // Save the officer with verified department
         PoliceOfficer savedOfficer = policeOfficerRepository.save(officer);
-        log.info("Created new police officer: {} {}", savedUser.getFirstName(), savedUser.getLastName());
+        log.info("Created new police officer: {} {} with department: {}", 
+               savedUser.getFirstName(), savedUser.getLastName(), savedOfficer.getDepartment().getName());
         
         return mapToPoliceOfficerResponse(savedOfficer);
     }
@@ -431,7 +444,7 @@ public class AdminServiceImpl implements AdminService {
                 .description(department.getDescription())
                 .location(department.getLocation())
                 .contactInfo(department.getContactInfo())
-                .officerCount(department.getOfficers() != null ? department.getOfficers().size() : 0)
+                .officerCount(policeOfficerRepository.countByDepartment(department))
                 .createdAt(department.getCreatedAt())
                 .updatedAt(department.getUpdatedAt())
                 .build();

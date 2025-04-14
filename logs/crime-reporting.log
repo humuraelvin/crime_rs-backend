@@ -208,3 +208,76 @@
 2025-04-14T03:21:34.097+02:00  INFO 53098 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Getting all departments
 2025-04-14T03:21:48.848+02:00  INFO 53098 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.controller.AdminController       : Fetching all departments
 2025-04-14T03:21:48.853+02:00  INFO 53098 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.service.impl.AdminServiceImpl    : Getting all departments
+2025-04-14T03:23:24.250+02:00  INFO 53098 --- [crime-reporting-backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-14T03:23:24.332+02:00  INFO 53098 --- [crime-reporting-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-04-14T03:23:24.514+02:00  INFO 53098 --- [crime-reporting-backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-14T03:23:24.571+02:00  INFO 53098 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-04-14T03:23:24.599+02:00  INFO 53098 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-04-14T03:23:30.182+02:00  INFO 65736 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 65736 (/home/humura/Documents/IdeaProjects/crime-reporting-system/crime-reporting-backend/target/classes started by humura in /home/humura/Documents/IdeaProjects/crime-reporting-system/crime-reporting-backend)
+2025-04-14T03:23:30.183+02:00 DEBUG 65736 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-04-14T03:23:30.184+02:00  INFO 65736 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
+2025-04-14T03:23:30.870+02:00  INFO 65736 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-04-14T03:23:30.915+02:00  INFO 65736 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 38 ms. Found 8 JPA repository interfaces.
+2025-04-14T03:23:31.430+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-04-14T03:23:31.437+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-04-14T03:23:31.438+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-04-14T03:23:31.477+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-04-14T03:23:31.477+02:00  INFO 65736 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1265 ms
+2025-04-14T03:23:31.734+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-04-14T03:23:31.776+02:00  INFO 65736 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-04-14T03:23:31.805+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-04-14T03:23:32.148+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-04-14T03:23:32.172+02:00  INFO 65736 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-04-14T03:23:32.240+02:00  INFO 65736 --- [crime-reporting-backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@33b2ba25
+2025-04-14T03:23:32.242+02:00  INFO 65736 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-04-14T03:23:32.274+02:00  WARN 65736 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-04-14T03:23:32.290+02:00  INFO 65736 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 15.3
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-04-14T03:23:33.242+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-04-14T03:23:33.681+02:00  INFO 65736 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-04-14T03:23:33.883+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-04-14T03:23:34.715+02:00 DEBUG 65736 --- [crime-reporting-backend] [main] c.c.r.c.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
+2025-04-14T03:23:35.167+02:00  INFO 65736 --- [crime-reporting-backend] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-04-14T03:23:35.168+02:00  WARN 65736 --- [crime-reporting-backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-04-14T03:23:35.704+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-04-14T03:23:36.144+02:00  INFO 65736 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-04-14T03:23:36.153+02:00  INFO 65736 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Started CrimeReportingBackendApplication in 6.32 seconds (process running for 6.837)
+2025-04-14T03:23:36.218+02:00  INFO 65736 --- [crime-reporting-backend] [main] c.c.r.c.config.AdminUserInitializer      : Admin user already exists, skipping initialization
+2025-04-14T03:23:36.749+02:00  INFO 65736 --- [crime-reporting-backend] [RMI TCP Connection(4)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-04-14T03:23:36.750+02:00  INFO 65736 --- [crime-reporting-backend] [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-04-14T03:23:36.752+02:00  INFO 65736 --- [crime-reporting-backend] [RMI TCP Connection(4)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-04-14T03:24:15.967+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.controller.AdminController       : Creating new police officer
+2025-04-14T03:24:15.972+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.AdminServiceImpl    : Creating police officer with request: PoliceOfficerRequest(firstName=Lamine, lastName=Yamal, email=lamine@crimereporting.com, password=12345678, phoneNumber=0782260439, badgeNumber=12, departmentId=4, rank=RW, specialization=Right Wing, contactInfo=Toll Free: LLR, jurisdiction=Innate)
+2025-04-14T03:24:15.973+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.AdminServiceImpl    : Department ID from request: 4
+2025-04-14T03:24:15.985+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.AdminServiceImpl    : Department found: id=4, name=BARCA
+2025-04-14T03:24:16.091+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.AdminServiceImpl    : User created successfully with id: 7
+2025-04-14T03:24:16.092+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.AdminServiceImpl    : Officer built with department id: 4, badge number: 12
+2025-04-14T03:24:16.099+02:00  WARN 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23502
+2025-04-14T03:24:16.100+02:00 ERROR 65736 --- [crime-reporting-backend] [http-nio-8080-exec-2] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: null value in column "department" of relation "police_officers" violates not-null constraint
+  Detail: Failing row contains (5, 12, Toll Free: LLR, null, Innate, RW, Right Wing, 7, 2025-04-14 03:24:16.093226, 2025-04-14 03:24:16.093244, 4).
+2025-04-14T03:25:25.751+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.controller.AdminController       : Creating new police officer
+2025-04-14T03:25:25.751+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.AdminServiceImpl    : Creating police officer with request: PoliceOfficerRequest(firstName=Lamine, lastName=Yamal, email=lamine@crimereporting.com, password=12345678, phoneNumber=0782260439, badgeNumber=12, departmentId=4, rank=RW, specialization=Right Wing, contactInfo=Toll Free: LLR, jurisdiction=Innate)
+2025-04-14T03:25:25.752+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.AdminServiceImpl    : Department ID from request: 4
+2025-04-14T03:25:25.754+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.AdminServiceImpl    : Department found: id=4, name=BARCA
+2025-04-14T03:25:25.839+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.AdminServiceImpl    : User created successfully with id: 8
+2025-04-14T03:25:25.839+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.AdminServiceImpl    : Officer built with department id: 4, badge number: 12
+2025-04-14T03:25:25.840+02:00  WARN 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23502
+2025-04-14T03:25:25.841+02:00 ERROR 65736 --- [crime-reporting-backend] [http-nio-8080-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : ERROR: null value in column "department" of relation "police_officers" violates not-null constraint
+  Detail: Failing row contains (6, 12, Toll Free: LLR, null, Innate, RW, Right Wing, 8, 2025-04-14 03:25:25.839847, 2025-04-14 03:25:25.839861, 4).
+2025-04-14T03:37:46.793+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.controller.AdminController       : Fetching all departments
+2025-04-14T03:37:46.886+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.service.impl.AdminServiceImpl    : Getting all departments
+2025-04-14T03:38:17.510+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.controller.AdminController       : Fetching all departments
+2025-04-14T03:38:17.517+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.service.impl.AdminServiceImpl    : Getting all departments
+2025-04-14T03:38:37.614+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.controller.AdminController       : Fetching all departments
+2025-04-14T03:38:37.626+02:00  INFO 65736 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.impl.AdminServiceImpl    : Getting all departments
+2025-04-14T03:38:57.912+02:00  INFO 65736 --- [crime-reporting-backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-04-14T03:38:57.953+02:00  INFO 65736 --- [crime-reporting-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-04-14T03:38:58.047+02:00  INFO 65736 --- [crime-reporting-backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-04-14T03:38:58.089+02:00  INFO 65736 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-04-14T03:38:58.107+02:00  INFO 65736 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
