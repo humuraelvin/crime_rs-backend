@@ -1,17 +1,23 @@
 package com.crime.reporting.crime_reporting_backend.controller;
 
 import com.crime.reporting.crime_reporting_backend.dto.*;
+import com.crime.reporting.crime_reporting_backend.entity.ComplaintStatus;
+import com.crime.reporting.crime_reporting_backend.entity.CrimeType;
 import com.crime.reporting.crime_reporting_backend.service.AdminService;
+import com.crime.reporting.crime_reporting_backend.service.ComplaintService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,6 +28,7 @@ import java.util.List;
 public class AdminController {
     
     private final AdminService adminService;
+    private final ComplaintService complaintService;
     
     // Statistics endpoints
     
@@ -134,12 +141,56 @@ public class AdminController {
     
     // Complaint management endpoints
     
+    @GetMapping("/complaints")
+    public ResponseEntity<Page<ComplaintResponse>> getAdminComplaints(
+            @RequestParam(required = false) ComplaintStatus status,
+            @RequestParam(required = false) String crimeType,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Pageable pageable) {
+        log.info("Admin fetching complaints with filters - status: {}, crimeType: {}, dateRange: {} to {}", 
+                status, crimeType, startDate, endDate);
+        
+        // Convert String crimeType to CrimeType enum if needed
+        CrimeType crimeTypeEnum = null;
+        if (crimeType != null && !crimeType.isEmpty()) {
+            try {
+                crimeTypeEnum = CrimeType.valueOf(crimeType.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid crime type provided: {}", crimeType);
+            }
+        }
+        
+        // Convert LocalDate to LocalDateTime for service method
+        LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
+        
+        Page<ComplaintResponse> complaints = complaintService.getAllComplaints(status, crimeTypeEnum, startDateTime, endDateTime, pageable);
+        return ResponseEntity.ok(complaints);
+    }
+    
+    @GetMapping("/complaints/all")
+    public ResponseEntity<List<ComplaintResponse>> getAllAdminComplaints() {
+        log.info("Admin fetching all complaints");
+        List<ComplaintResponse> complaints = complaintService.getAllComplaintsForAdmin();
+        return ResponseEntity.ok(complaints);
+    }
+    
     @PostMapping("/complaints/{complaintId}/assign/{officerId}")
     public ResponseEntity<Void> assignComplaintToOfficer(
             @PathVariable Long complaintId,
             @PathVariable Long officerId) {
         log.info("Assigning complaint with id: {} to officer with id: {}", complaintId, officerId);
         adminService.assignComplaintToOfficer(complaintId, officerId);
+        return ResponseEntity.ok().build();
+    }
+    
+    @PostMapping("/complaints/{complaintId}/assign")
+    public ResponseEntity<Void> assignComplaintWithData(
+            @PathVariable Long complaintId,
+            @RequestBody AssignmentRequest request) {
+        log.info("Assigning complaint with id: {} to officer with id: {}", complaintId, request.getOfficerId());
+        adminService.assignComplaintToOfficer(complaintId, request.getOfficerId());
         return ResponseEntity.ok().build();
     }
     

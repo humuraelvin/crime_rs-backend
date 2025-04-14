@@ -313,6 +313,20 @@ public class ComplaintService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get all complaints for admin dashboard with no pagination
+     * This method is specifically for the admin to see all complaints
+     * @return List of all complaints
+     */
+    @Transactional
+    @Cacheable(value = "adminComplaints")
+    public List<ComplaintResponse> getAllComplaintsForAdmin() {
+        List<Complaint> complaints = complaintRepository.findAll();
+        return complaints.stream()
+                .map(this::mapToComplaintResponseSafely)
+                .collect(Collectors.toList());
+    }
+
     private ComplaintResponse mapToComplaintResponse(Complaint complaint) {
         // Convert evidence entities to DTOs if present
         List<EvidenceResponse> evidenceResponses = null;

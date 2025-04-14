@@ -91,6 +91,7 @@ public class AdminServiceImpl implements AdminService {
     }
     
     @Override
+    @Transactional
     public DepartmentResponse getDepartmentById(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
@@ -99,7 +100,9 @@ public class AdminServiceImpl implements AdminService {
     }
     
     @Override
+    @Transactional
     public List<DepartmentResponse> getAllDepartments() {
+        log.info("Getting all departments");
         List<Department> departments = departmentRepository.findAll();
         return departments.stream()
                 .map(this::mapToDepartmentResponse)
@@ -107,6 +110,7 @@ public class AdminServiceImpl implements AdminService {
     }
     
     @Override
+    @Transactional
     public Page<DepartmentResponse> getAllDepartmentsPaged(Pageable pageable) {
         Page<Department> departmentsPage = departmentRepository.findAll(pageable);
         return departmentsPage.map(this::mapToDepartmentResponse);
@@ -117,13 +121,23 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public PoliceOfficerResponse createPoliceOfficer(PoliceOfficerRequest request) {
+        log.info("Creating police officer with request: {}", request);
+        log.info("Department ID from request: {}", request.getDepartmentId());
+        
         // Find department
         Department department = departmentRepository.findById(request.getDepartmentId())
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
         
+        log.info("Department found: id={}, name={}", department.getId(), department.getName());
+        
         // Check if email is already in use
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email is already in use");
+        }
+        
+        // Check if badge number is already in use
+        if (policeOfficerRepository.findByBadgeNumber(request.getBadgeNumber()).isPresent()) {
+            throw new IllegalArgumentException("Badge number is already in use");
         }
         
         // Create user
@@ -138,6 +152,13 @@ public class AdminServiceImpl implements AdminService {
                 .build();
         
         User savedUser = userRepository.save(user);
+        log.info("User created successfully with id: {}", savedUser.getId());
+        
+        // Double-check department before creating officer
+        if (department == null) {
+            log.error("Department is null before creating officer!");
+            throw new IllegalStateException("Department cannot be null when creating an officer");
+        }
         
         // Create police officer
         PoliceOfficer officer = PoliceOfficer.builder()
@@ -149,6 +170,15 @@ public class AdminServiceImpl implements AdminService {
                 .contactInfo(request.getContactInfo())
                 .jurisdiction(request.getJurisdiction())
                 .build();
+        
+        // Verify department is set
+        if (officer.getDepartment() == null) {
+            log.error("Department is null in officer object after building!");
+            throw new IllegalStateException("Department is null in officer object after building");
+        }
+        
+        log.info("Officer built with department id: {}, badge number: {}", 
+                officer.getDepartment().getId(), officer.getBadgeNumber());
         
         PoliceOfficer savedOfficer = policeOfficerRepository.save(officer);
         log.info("Created new police officer: {} {}", savedUser.getFirstName(), savedUser.getLastName());
@@ -177,6 +207,16 @@ public class AdminServiceImpl implements AdminService {
                 throw new IllegalArgumentException("Email is already in use");
             }
             user.setEmail(request.getEmail());
+        }
+        
+        // Check if badge number is being changed and if it's already in use
+        if (request.getBadgeNumber() != null && !request.getBadgeNumber().equals(officer.getBadgeNumber())) {
+            policeOfficerRepository.findByBadgeNumber(request.getBadgeNumber())
+                    .ifPresent(existingOfficer -> {
+                        if (!existingOfficer.getId().equals(id)) {
+                            throw new IllegalArgumentException("Badge number is already in use");
+                        }
+                    });
         }
         
         // Update password if provided

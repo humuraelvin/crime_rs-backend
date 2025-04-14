@@ -34,7 +34,7 @@ public class Department {
     @Column
     private String contactInfo;
     
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
     private List<PoliceOfficer> officers;
     
     @CreationTimestamp

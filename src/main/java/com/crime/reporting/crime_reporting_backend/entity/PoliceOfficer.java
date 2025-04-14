@@ -26,11 +26,11 @@ public class PoliceOfficer {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String badgeNumber;
     
-    @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "department_id", nullable = false, referencedColumnName = "id")
     private Department department;
     
     @Column(nullable = false)
