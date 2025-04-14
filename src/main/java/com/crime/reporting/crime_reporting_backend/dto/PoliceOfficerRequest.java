@@ -38,4 +38,16 @@ public class PoliceOfficerRequest {
     private String contactInfo;
     
     private String jurisdiction;
+    
+    @Override
+    public String toString() {
+        return "PoliceOfficerRequest{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", badgeNumber='" + badgeNumber + '\'' +
+                ", departmentId=" + departmentId +
+                ", rank='" + rank + '\'' +
+                '}';
+    }
 } 

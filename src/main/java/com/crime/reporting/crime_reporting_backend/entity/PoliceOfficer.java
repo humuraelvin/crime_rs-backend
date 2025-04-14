@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -46,11 +47,22 @@ public class PoliceOfficer {
     private String jurisdiction;
     
     @OneToMany(mappedBy = "assignedOfficer")
-    private List<CaseFile> caseFiles;
+    @Builder.Default
+    private List<CaseFile> caseFiles = new ArrayList<>();
     
     @CreationTimestamp
     private LocalDateTime createdAt;
     
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    
+    @Override
+    public String toString() {
+        return "PoliceOfficer{" +
+                "id=" + id +
+                ", badgeNumber='" + badgeNumber + '\'' +
+                ", departmentId=" + (department != null ? department.getId() : "null") +
+                ", rank='" + rank + '\'' +
+                '}';
+    }
 }
