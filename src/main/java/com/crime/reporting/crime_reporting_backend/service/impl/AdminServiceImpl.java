@@ -194,35 +194,38 @@ public class AdminServiceImpl implements AdminService {
             LocalDateTime now = LocalDateTime.now();
             
             String sql = "INSERT INTO police_officers " +
-                        "(badge_number, contact_info, jurisdiction, rank, specialization, department_id, user_id, created_at, updated_at, department) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "(badge_number, contact_info, jurisdiction, rank, specialization, department_id, user_id, created_at, updated_at) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-                
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1, request.getBadgeNumber());
                 ps.setString(2, request.getContactInfo());
                 ps.setString(3, request.getJurisdiction());
                 ps.setString(4, request.getRank());
                 ps.setString(5, request.getSpecialization());
-                ps.setLong(6, request.getDepartmentId());
+                ps.setLong(6, department.getId());
                 ps.setLong(7, savedUser.getId());
                 ps.setTimestamp(8, Timestamp.valueOf(now));
                 ps.setTimestamp(9, Timestamp.valueOf(now));
-                ps.setLong(10, request.getDepartmentId()); // Set the department column explicitly
-                
                 return ps;
             }, keyHolder);
             
-            // Get the generated officer ID from the id column
-            Number key = (Number) keyHolder.getKeys().get("id");
-            Long officerId = key.longValue();
+            Long officerId = keyHolder.getKey().longValue();
+            log.info("Police officer created successfully with id: {}", officerId);
             
-            log.info("Successfully created officer with ID: {} using JDBC", officerId);
-            
-            // Fetch the complete officer information using JPA to return a properly mapped response
-            PoliceOfficer officer = policeOfficerRepository.findById(officerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Officer not found after creation"));
+            // Create a proper PoliceOfficer object and map it to a response
+            PoliceOfficer officer = new PoliceOfficer();
+            officer.setId(officerId);
+            officer.setUser(savedUser);
+            officer.setBadgeNumber(request.getBadgeNumber());
+            officer.setDepartment(department);
+            officer.setRank(request.getRank());
+            officer.setSpecialization(request.getSpecialization());
+            officer.setContactInfo(request.getContactInfo());
+            officer.setJurisdiction(request.getJurisdiction());
+            officer.setCreatedAt(now);
+            officer.setUpdatedAt(now);
             
             return mapToPoliceOfficerResponse(officer);
             
@@ -357,21 +360,24 @@ public class AdminServiceImpl implements AdminService {
         // Create case file if it doesn't exist
         CaseFile caseFile = complaint.getCaseFile();
         if (caseFile == null) {
-            caseFile = CaseFile.builder()
-                    .complaint(complaint)
-                    .assignedOfficer(officer)
-                    .status(CaseStatus.OPEN)
-                    .build();
+            caseFile = new CaseFile();
+            caseFile.setComplaint(complaint);
+            caseFile.setAssignedOfficer(officer);
+            caseFile.setStatus(CaseStatus.OPEN);
+            caseFile.setCreatedAt(LocalDateTime.now());
+            caseFile.setLastUpdated(LocalDateTime.now());
             
             caseFileRepository.save(caseFile);
             complaint.setCaseFile(caseFile);
         } else {
             caseFile.setAssignedOfficer(officer);
+            caseFile.setLastUpdated(LocalDateTime.now());
             caseFileRepository.save(caseFile);
         }
         
         // Update complaint status
         complaint.setStatus(ComplaintStatus.ASSIGNED);
+        complaint.setDateLastUpdated(LocalDateTime.now());
         complaintRepository.save(complaint);
         
         log.info("Assigned complaint #{} to officer with id: {}", complaintId, officerId);

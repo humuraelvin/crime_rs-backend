@@ -1,6 +1,7 @@
 package com.crime.reporting.crime_reporting_backend.controller;
 
 import com.crime.reporting.crime_reporting_backend.dto.*;
+import com.crime.reporting.crime_reporting_backend.dto.ComplaintDTO;
 import com.crime.reporting.crime_reporting_backend.entity.ComplaintStatus;
 import com.crime.reporting.crime_reporting_backend.entity.CrimeType;
 import com.crime.reporting.crime_reporting_backend.service.AdminService;
@@ -142,56 +143,35 @@ public class AdminController {
     // Complaint management endpoints
     
     @GetMapping("/complaints")
-    public ResponseEntity<Page<ComplaintResponse>> getAdminComplaints(
-            @RequestParam(required = false) ComplaintStatus status,
-            @RequestParam(required = false) String crimeType,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            Pageable pageable) {
-        log.info("Admin fetching complaints with filters - status: {}, crimeType: {}, dateRange: {} to {}", 
-                status, crimeType, startDate, endDate);
-        
-        // Convert String crimeType to CrimeType enum if needed
-        CrimeType crimeTypeEnum = null;
-        if (crimeType != null && !crimeType.isEmpty()) {
-            try {
-                crimeTypeEnum = CrimeType.valueOf(crimeType.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid crime type provided: {}", crimeType);
-            }
-        }
-        
-        // Convert LocalDate to LocalDateTime for service method
-        LocalDateTime startDateTime = startDate != null ? startDate.atStartOfDay() : null;
-        LocalDateTime endDateTime = endDate != null ? endDate.atTime(23, 59, 59) : null;
-        
-        Page<ComplaintResponse> complaints = complaintService.getAllComplaints(status, crimeTypeEnum, startDateTime, endDateTime, pageable);
+    public ResponseEntity<List<ComplaintDTO>> getAdminComplaints() {
+        log.info("Admin fetching all complaints");
+        List<ComplaintDTO> complaints = complaintService.getAllComplaints();
         return ResponseEntity.ok(complaints);
     }
     
     @GetMapping("/complaints/all")
-    public ResponseEntity<List<ComplaintResponse>> getAllAdminComplaints() {
-        log.info("Admin fetching all complaints");
-        List<ComplaintResponse> complaints = complaintService.getAllComplaintsForAdmin();
+    public ResponseEntity<List<ComplaintDTO>> getAllAdminComplaints() {
+        log.info("Admin fetching all complaints with details");
+        List<ComplaintDTO> complaints = complaintService.getAllComplaintsForAdmin();
         return ResponseEntity.ok(complaints);
     }
     
     @PostMapping("/complaints/{complaintId}/assign/{officerId}")
-    public ResponseEntity<Void> assignComplaintToOfficer(
+    public ResponseEntity<ComplaintDTO> assignComplaintToOfficer(
             @PathVariable Long complaintId,
             @PathVariable Long officerId) {
         log.info("Assigning complaint with id: {} to officer with id: {}", complaintId, officerId);
-        adminService.assignComplaintToOfficer(complaintId, officerId);
-        return ResponseEntity.ok().build();
+        ComplaintDTO updatedComplaint = complaintService.assignComplaintToOfficer(complaintId, officerId);
+        return ResponseEntity.ok(updatedComplaint);
     }
     
     @PostMapping("/complaints/{complaintId}/assign")
-    public ResponseEntity<Void> assignComplaintWithData(
+    public ResponseEntity<ComplaintDTO> assignComplaintWithData(
             @PathVariable Long complaintId,
             @RequestBody AssignmentRequest request) {
         log.info("Assigning complaint with id: {} to officer with id: {}", complaintId, request.getOfficerId());
-        adminService.assignComplaintToOfficer(complaintId, request.getOfficerId());
-        return ResponseEntity.ok().build();
+        ComplaintDTO updatedComplaint = complaintService.assignComplaintToOfficer(complaintId, request.getOfficerId());
+        return ResponseEntity.ok(updatedComplaint);
     }
     
     // User management endpoints

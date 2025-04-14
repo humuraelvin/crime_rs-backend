@@ -46,4 +46,11 @@ public interface UserService {
      * @return the user data
      */
     UserResponse getUserById(Long id);
+    
+    /**
+     * Finds a user by their email address
+     * @param email the email address to search for
+     * @return the user data
+     */
+    UserResponse findByEmail(String email);
 } 

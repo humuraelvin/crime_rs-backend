@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,11 +54,12 @@ public class EvidenceService {
             
             Evidence evidence = Evidence.builder()
                     .complaint(complaint)
-                    .type(evidenceType)
-                    .fileName(file.getOriginalFilename())
-                    .fileUrl(fileUrl)
-                    .fileContentType(file.getContentType())
+                    .evidenceType(evidenceType)
+                    .fileName(fileUrl)
+                    .originalFileName(file.getOriginalFilename())
+                    .fileType(file.getContentType())
                     .fileSize(file.getSize())
+                    .uploadDate(LocalDateTime.now())
                     .uploadedBy(user)
                     .build();
             
@@ -95,16 +97,17 @@ public class EvidenceService {
         return EvidenceResponse.builder()
                 .id(evidence.getId())
                 .complaintId(evidence.getComplaint().getId())
-                .type(evidence.getType())
+                .type(evidence.getEvidenceType())
                 .fileName(evidence.getFileName())
-                .fileUrl(evidence.getFileUrl())
-                .fileContentType(evidence.getFileContentType())
+                .fileUrl(evidence.getOriginalFileName())
+                .fileContentType(evidence.getFileType())
                 .fileSize(evidence.getFileSize())
                 .description(evidence.getDescription())
                 .metadata(evidence.getMetadata())
-                .uploadedAt(evidence.getUploadedAt())
-                .uploadedById(evidence.getUploadedBy().getId())
-                .uploadedByName(evidence.getUploadedBy().getFirstName() + " " + evidence.getUploadedBy().getLastName())
+                .uploadedAt(evidence.getUploadDate())
+                .uploadedById(evidence.getUploadedBy() != null ? evidence.getUploadedBy().getId() : null)
+                .uploadedByName(evidence.getUploadedBy() != null ? 
+                        evidence.getUploadedBy().getFirstName() + " " + evidence.getUploadedBy().getLastName() : null)
                 .build();
     }
     
@@ -114,12 +117,8 @@ public class EvidenceService {
                 .orElseThrow(() -> new EntityNotFoundException("Evidence not found with ID: " + evidenceId));
         
         try {
-            // Extract filename from fileUrl
-            String fileUrl = evidence.getFileUrl();
-            String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-            
             // Delete the physical file
-            fileStorageService.deleteFile(fileName);
+            fileStorageService.deleteFile(evidence.getFileName());
             
             // Delete the database record
             evidenceRepository.delete(evidence);

@@ -13,7 +13,7 @@ import java.util.List;
 public interface EvidenceRepository extends JpaRepository<Evidence, Long> {
     List<Evidence> findByComplaint(Complaint complaint);
     List<Evidence> findByComplaintId(Long complaintId);
-    List<Evidence> findByType(EvidenceType type);
+    List<Evidence> findByEvidenceType(EvidenceType evidenceType);
     List<Evidence> findByUploadedBy(User user);
-    List<Evidence> findByFileContentType(String contentType);
+    List<Evidence> findByFileType(String contentType);
 } 

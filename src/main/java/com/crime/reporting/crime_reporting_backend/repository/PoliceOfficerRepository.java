@@ -25,4 +25,7 @@ public interface PoliceOfficerRepository extends JpaRepository<PoliceOfficer, Lo
     List<PoliceOfficer> findByRank(String rank);
     List<PoliceOfficer> findBySpecialization(String specialization);
     List<PoliceOfficer> findByJurisdiction(String jurisdiction);
+    
+    boolean existsByBadgeNumber(String badgeNumber);
+    boolean existsByUser(User user);
 } 

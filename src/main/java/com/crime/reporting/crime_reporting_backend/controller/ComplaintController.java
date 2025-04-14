@@ -1,7 +1,7 @@
 package com.crime.reporting.crime_reporting_backend.controller;
 
+import com.crime.reporting.crime_reporting_backend.dto.ComplaintDTO;
 import com.crime.reporting.crime_reporting_backend.dto.ComplaintRequest;
-import com.crime.reporting.crime_reporting_backend.dto.ComplaintResponse;
 import com.crime.reporting.crime_reporting_backend.dto.EvidenceResponse;
 import com.crime.reporting.crime_reporting_backend.entity.ComplaintStatus;
 import com.crime.reporting.crime_reporting_backend.entity.CrimeType;
@@ -40,7 +40,7 @@ public class ComplaintController {
     private final EvidenceService evidenceService;
 
     @PostMapping
-    public ResponseEntity<ComplaintResponse> createComplaint(
+    public ResponseEntity<ComplaintDTO> createComplaint(
             @Valid @RequestBody ComplaintRequest request,
             @AuthenticationPrincipal User currentUser) {
         request.setUserId(currentUser.getId());
@@ -48,7 +48,7 @@ public class ComplaintController {
     }
     
     @PostMapping(value = "/with-evidence", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ComplaintResponse> createComplaintWithEvidence(
+    public ResponseEntity<ComplaintDTO> createComplaintWithEvidence(
             @RequestPart("type") String type,
             @RequestPart("description") String description,
             @RequestPart("location") String location,
@@ -69,23 +69,19 @@ public class ComplaintController {
                 HttpStatus.CREATED
             );
         } catch (Exception e) {
+            log.error("Error creating complaint with evidence: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ComplaintResponse> getComplaintById(@PathVariable Long id) {
+    public ResponseEntity<ComplaintDTO> getComplaintById(@PathVariable Long id) {
         return ResponseEntity.ok(complaintService.getComplaintById(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<ComplaintResponse>> getAllComplaints(
-            @PageableDefault(size = 10) Pageable pageable,
-            @RequestParam(required = false) ComplaintStatus status,
-            @RequestParam(required = false) CrimeType crimeType,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        return ResponseEntity.ok(complaintService.getAllComplaints(status, crimeType, startDate, endDate, pageable));
+    public ResponseEntity<List<ComplaintDTO>> getAllComplaints() {
+        return ResponseEntity.ok(complaintService.getAllComplaints());
     }
 
     @GetMapping("/my-complaints")
@@ -93,7 +89,7 @@ public class ComplaintController {
             @PageableDefault(size = 10) Pageable pageable,
             @AuthenticationPrincipal User currentUser) {
         try {
-            Page<ComplaintResponse> complaints = complaintService.getComplaintsByUser(currentUser.getId(), pageable);
+            Page<ComplaintDTO> complaints = complaintService.getComplaintsByUser(currentUser.getId(), pageable);
             return ResponseEntity.ok(complaints);
         } catch (Exception e) {
             log.error("Error fetching complaints for user {}: {}", currentUser.getId(), e.getMessage(), e);
@@ -108,7 +104,7 @@ public class ComplaintController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<ComplaintResponse> updateComplaintStatus(
+    public ResponseEntity<ComplaintDTO> updateComplaintStatus(
             @PathVariable Long id,
             @RequestParam ComplaintStatus status) {
         return ResponseEntity.ok(complaintService.updateComplaintStatus(id, status));
@@ -124,6 +120,7 @@ public class ComplaintController {
                     files, complaintId, currentUser.getId());
             return new ResponseEntity<>(uploadedFiles, HttpStatus.CREATED);
         } catch (IOException e) {
+            log.error("Error uploading evidence: {}", e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -166,7 +163,7 @@ public class ComplaintController {
     }
     
     // Inner DTOs for statistics endpoints
-    public record StatusCountDTO(ComplaintStatus status, long count) {}
-    public record CrimeTypeCountDTO(CrimeType crimeType, long count) {}
-    public record DateCountDTO(LocalDateTime date, long count) {}
+    public static record StatusCountDTO(String status, long count) {}
+    public static record CrimeTypeCountDTO(String crimeType, long count) {}
+    public static record DateCountDTO(String date, long count) {}
 } 

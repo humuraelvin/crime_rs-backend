@@ -20,14 +20,15 @@ public class ComplaintDTO {
     private String description;
     private String location;
     private ComplaintStatus status;
-    private LocalDateTime dateFiled;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private CrimeType crimeType;
+    private CrimeType category;
     private String incidentDate;
     private Long userId;
-    private String userName; // User's full name
-    private String userContact; // User's phone or email
+    private String userName;
+    private String userContact;
     private Long assignedOfficerId;
     private String assignedOfficerName;
+    private List<String> evidenceFileNames;
     private List<EvidenceDTO> evidences;
 } 

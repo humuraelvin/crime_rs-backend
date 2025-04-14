@@ -24,17 +24,17 @@ public class Evidence {
     private Complaint complaint;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EvidenceType type;
+    @Column(nullable = true)
+    private EvidenceType evidenceType;
     
     @Column(nullable = false)
     private String fileName;
     
-    @Column(nullable = false)
-    private String fileUrl;
+    @Column
+    private String originalFileName;
     
     @Column
-    private String fileContentType;
+    private String fileType;
     
     @Column
     private Long fileSize;
@@ -45,15 +45,20 @@ public class Evidence {
     @Column
     private String metadata;
     
-    @Column(nullable = false)
-    private LocalDateTime uploadedAt;
+    @Column(nullable = true)
+    private LocalDateTime uploadDate;
     
     @ManyToOne
-    @JoinColumn(name = "uploaded_by", nullable = false)
+    @JoinColumn(name = "uploaded_by")
     private User uploadedBy;
     
     @PrePersist
     protected void onCreate() {
-        uploadedAt = LocalDateTime.now();
+        if (uploadDate == null) {
+            uploadDate = LocalDateTime.now();
+        }
+        if (evidenceType == null) {
+            evidenceType = EvidenceType.OTHER;
+        }
     }
 }

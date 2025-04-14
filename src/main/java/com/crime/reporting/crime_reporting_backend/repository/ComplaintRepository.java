@@ -79,5 +79,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     
     Page<Complaint> findByAssignedOfficerId(Long officerId, Pageable pageable);
     
+    List<Complaint> findByAssignedOfficerId(Long officerId);
+    
     List<Complaint> findByUserId(Long userId);
 } 

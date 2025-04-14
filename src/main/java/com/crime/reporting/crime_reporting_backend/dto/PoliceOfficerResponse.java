@@ -7,10 +7,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for returning police officer data in API responses
+ */
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class PoliceOfficerResponse {
     private Long id;
     private Long userId;
@@ -19,13 +22,10 @@ public class PoliceOfficerResponse {
     private String email;
     private String phoneNumber;
     private String badgeNumber;
-    
-    // Department details
-    private Long departmentId;
-    private String departmentName;
-    
     private String rank;
     private String specialization;
+    private Long departmentId;
+    private String departmentName;
     private String contactInfo;
     private String jurisdiction;
     private int activeCasesCount;
