@@ -14,9 +14,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByName(String name);
     boolean existsByName(String name);
     
-    @Query("SELECT d FROM Department d LEFT JOIN FETCH d.officers WHERE d.id = :id")
+    @Query("SELECT DISTINCT d FROM Department d LEFT JOIN FETCH d.officers WHERE d.id = :id")
     Optional<Department> findByIdWithOfficers(@Param("id") Long id);
     
-    @Query("SELECT d FROM Department d LEFT JOIN FETCH d.officers")
+    @Query("SELECT DISTINCT d FROM Department d LEFT JOIN FETCH d.officers")
     List<Department> findAllWithOfficers();
 } 

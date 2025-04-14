@@ -13,11 +13,19 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +38,10 @@ public class AdminServiceImpl implements AdminService {
     private final ComplaintRepository complaintRepository;
     private final CaseFileRepository caseFileRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTemplate;
+    
+    @PersistenceContext
+    private EntityManager entityManager;
     
     // Department management
     
@@ -136,7 +148,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public PoliceOfficerResponse createPoliceOfficer(PoliceOfficerRequest request) {
-        log.info("Creating police officer with request: {}", request);
+        log.info("Creating police officer using direct JDBC approach");
         log.info("Department ID from request: {}", request.getDepartmentId());
         
         // Validate department ID first - must be provided
@@ -155,21 +167,12 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Badge number is already in use");
         }
         
-        // Fetch department first to ensure it exists before proceeding
+        // Check if department exists
         Department department = departmentRepository.findById(request.getDepartmentId())
-            .orElseThrow(() -> {
-                log.error("Department not found with id: {}", request.getDepartmentId());
-                return new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId());
-            });
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId()));
         
-        // Now load with officers to avoid lazy loading issues
-        department = departmentRepository.findByIdWithOfficers(request.getDepartmentId())
-            .orElseThrow(() -> {
-                log.error("Department not found with officers for id: {}", request.getDepartmentId());
-                return new ResourceNotFoundException("Department not found with id: " + request.getDepartmentId());
-            });
-        
-        log.info("Department found and initialized: id={}, name={}", department.getId(), department.getName());
+        log.info("Department with ID {} exists and will be used for the officer: {}", 
+                request.getDepartmentId(), department.getName());
         
         // Create user
         User user = User.builder()
@@ -185,39 +188,50 @@ public class AdminServiceImpl implements AdminService {
         User savedUser = userRepository.save(user);
         log.info("User created successfully with id: {}", savedUser.getId());
         
-        // Create police officer and explicitly set the department
-        PoliceOfficer officer = PoliceOfficer.builder()
-                .user(savedUser)
-                .badgeNumber(request.getBadgeNumber())
-                .department(department) // Set department directly
-                .rank(request.getRank())
-                .specialization(request.getSpecialization())
-                .contactInfo(request.getContactInfo())
-                .jurisdiction(request.getJurisdiction())
-                .build();
-        
-        // Double-check that department is set before saving
-        if (officer.getDepartment() == null) {
-            log.error("Department is null after building officer. Department ID: {}", request.getDepartmentId());
-            throw new IllegalStateException("Failed to associate department with officer");
+        try {
+            // Use direct JDBC to insert into the police_officers table
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            LocalDateTime now = LocalDateTime.now();
+            
+            String sql = "INSERT INTO police_officers " +
+                        "(badge_number, contact_info, jurisdiction, rank, specialization, department_id, user_id, created_at, updated_at, department) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                
+                ps.setString(1, request.getBadgeNumber());
+                ps.setString(2, request.getContactInfo());
+                ps.setString(3, request.getJurisdiction());
+                ps.setString(4, request.getRank());
+                ps.setString(5, request.getSpecialization());
+                ps.setLong(6, request.getDepartmentId());
+                ps.setLong(7, savedUser.getId());
+                ps.setTimestamp(8, Timestamp.valueOf(now));
+                ps.setTimestamp(9, Timestamp.valueOf(now));
+                ps.setLong(10, request.getDepartmentId()); // Set the department column explicitly
+                
+                return ps;
+            }, keyHolder);
+            
+            // Get the generated officer ID from the id column
+            Number key = (Number) keyHolder.getKeys().get("id");
+            Long officerId = key.longValue();
+            
+            log.info("Successfully created officer with ID: {} using JDBC", officerId);
+            
+            // Fetch the complete officer information using JPA to return a properly mapped response
+            PoliceOfficer officer = policeOfficerRepository.findById(officerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Officer not found after creation"));
+            
+            return mapToPoliceOfficerResponse(officer);
+            
+        } catch (Exception e) {
+            log.error("Error saving police officer with JDBC: {}", e.getMessage(), e);
+            // Roll back user creation since officer creation failed
+            userRepository.delete(savedUser);
+            throw e;
         }
-        
-        log.info("Officer built with department id: {}, badge number: {}", 
-                officer.getDepartment().getId(), officer.getBadgeNumber());
-        
-        // Save and flush to ensure immediate persistence
-        PoliceOfficer savedOfficer = policeOfficerRepository.saveAndFlush(officer);
-        
-        // Verify the saved officer has a department
-        if (savedOfficer.getDepartment() == null) {
-            log.error("Department is null after saving officer. This should not happen.");
-            throw new IllegalStateException("Department association failed during save operation");
-        }
-        
-        log.info("Created new police officer: {} {} with department: {}", 
-               savedUser.getFirstName(), savedUser.getLastName(), savedOfficer.getDepartment().getName());
-        
-        return mapToPoliceOfficerResponse(savedOfficer);
     }
     
     @Override
@@ -366,12 +380,14 @@ public class AdminServiceImpl implements AdminService {
     // User management
     
     @Override
+    @Transactional(readOnly = true)
     public Page<UserListResponse> getAllUsers(Pageable pageable) {
-        Page<User> usersPage = userRepository.findAll(pageable);
+        Page<User> usersPage = userRepository.findAllWithoutComplaintsFetch(pageable);
         return usersPage.map(this::mapToUserListResponse);
     }
     
     @Override
+    @Transactional(readOnly = true)
     public Page<UserListResponse> getUsersByRole(String roleStr, Pageable pageable) {
         Role role;
         try {
@@ -380,7 +396,7 @@ public class AdminServiceImpl implements AdminService {
             throw new IllegalArgumentException("Invalid role: " + roleStr);
         }
         
-        Page<User> usersPage = userRepository.findByRole(role, pageable);
+        Page<User> usersPage = userRepository.findByRoleWithoutComplaintsFetch(role, pageable);
         return usersPage.map(this::mapToUserListResponse);
     }
     
@@ -508,7 +524,7 @@ public class AdminServiceImpl implements AdminService {
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
                 .mfaEnabled(user.isMfaEnabled())
-                .complaintCount(user.getComplaints() != null ? user.getComplaints().size() : 0)
+                .complaintCount((int)complaintRepository.countByUserId(user.getId()))
                 .build();
     }
 } 

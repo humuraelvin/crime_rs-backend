@@ -31,4 +31,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
            "WHERE FUNCTION('YEAR', u.createdAt) = FUNCTION('YEAR', CURRENT_DATE) " +
            "GROUP BY FUNCTION('MONTH', u.createdAt)")
     List<Object[]> countUsersByMonth();
+    
+    @Query("SELECT u FROM User u")
+    Page<User> findAllWithoutComplaintsFetch(Pageable pageable);
+    
+    @Query("SELECT u FROM User u WHERE u.role = :role")
+    Page<User> findByRoleWithoutComplaintsFetch(Role role, Pageable pageable);
 } 

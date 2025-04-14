@@ -67,4 +67,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
             "WHERE FUNCTION('YEAR', c.dateFiled) = FUNCTION('YEAR', CURRENT_DATE) " +
             "GROUP BY FUNCTION('MONTH', c.dateFiled)")
     List<Object[]> countByMonthForCurrentYear();
+    
+    @Query("SELECT COUNT(c) FROM Complaint c WHERE c.user.id = :userId")
+    long countByUserId(Long userId);
 } 

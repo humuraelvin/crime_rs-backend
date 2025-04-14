@@ -30,9 +30,13 @@ public class PoliceOfficer {
     @Column(nullable = false, unique = true)
     private String badgeNumber;
     
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "department_id", nullable = false, referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_id", nullable = false)
     private Department department;
+    
+    // Alternative approach - direct ID field
+    @Transient // Not persisted, just for convenience
+    private Long departmentDirectId;
     
     @Column(nullable = false)
     private String rank;
@@ -56,12 +60,17 @@ public class PoliceOfficer {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     
+    // Get the department ID directly
+    public Long getDepartmentId() {
+        return department != null ? department.getId() : departmentDirectId;
+    }
+    
     @Override
     public String toString() {
         return "PoliceOfficer{" +
                 "id=" + id +
                 ", badgeNumber='" + badgeNumber + '\'' +
-                ", departmentId=" + (department != null ? department.getId() : "null") +
+                ", departmentId=" + getDepartmentId() +
                 ", rank='" + rank + '\'' +
                 '}';
     }

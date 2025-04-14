@@ -35,7 +35,7 @@ public class Department {
     @Column
     private String contactInfo;
     
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @Builder.Default
     private List<PoliceOfficer> officers = new ArrayList<>();
     
