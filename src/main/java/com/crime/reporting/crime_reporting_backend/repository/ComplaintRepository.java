@@ -76,4 +76,8 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
     
     @Query("SELECT c FROM Complaint c LEFT JOIN FETCH c.evidences WHERE c.user = :user")
     Page<Complaint> findByUserWithEvidences(User user, Pageable pageable);
+    
+    Page<Complaint> findByAssignedOfficerId(Long officerId, Pageable pageable);
+    
+    List<Complaint> findByUserId(Long userId);
 } 

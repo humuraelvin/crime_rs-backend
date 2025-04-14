@@ -28,6 +28,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -493,5 +495,49 @@ public class ComplaintService {
         dto.setEvidences(null);
         
         return dto;
+    }
+
+    /**
+     * Gets complaints assigned to a specific officer
+     * @param officerId the ID of the police officer
+     * @param page the page number (0-based)
+     * @param size the page size
+     * @return list of complaints assigned to the officer
+     */
+    public List<ComplaintDTO> getComplaintsAssignedToOfficer(Long officerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateFiled").descending());
+        return complaintRepository.findByAssignedOfficerId(officerId, pageable)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * Updates the status of a complaint
+     * @param complaintId the complaint ID
+     * @param status the new status
+     * @param notes optional notes about the status change
+     * @return the updated complaint
+     */
+    public ComplaintDTO updateComplaintStatus(Long complaintId, String status, String notes) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new EntityNotFoundException("Complaint not found with id: " + complaintId));
+        
+        try {
+            ComplaintStatus complaintStatus = ComplaintStatus.valueOf(status);
+            complaint.setStatus(complaintStatus);
+            
+            if (notes != null && !notes.isEmpty()) {
+                // Add status update note or history entry if needed
+                // You might want to create a separate entity for complaint history
+            }
+            
+            complaint.setLastUpdated(LocalDateTime.now());
+            Complaint updated = complaintRepository.save(complaint);
+            
+            return mapToDTO(updated);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid complaint status: " + status);
+        }
     }
 } 

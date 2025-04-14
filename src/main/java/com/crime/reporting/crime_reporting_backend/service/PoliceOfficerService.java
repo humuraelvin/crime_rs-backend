@@ -51,6 +51,21 @@ public class PoliceOfficerService {
     }
     
     /**
+     * Gets a police officer by user ID
+     * @param userId the user ID
+     * @return the police officer details
+     */
+    public PoliceOfficerDTO getOfficerByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        
+        PoliceOfficer officer = policeOfficerRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Police officer not found for user id: " + userId));
+        
+        return mapToDTO(officer);
+    }
+    
+    /**
      * Maps a PoliceOfficer entity to a DTO
      */
     private PoliceOfficerDTO mapToDTO(PoliceOfficer officer) {
