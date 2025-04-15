@@ -74,7 +74,7 @@ public class PoliceOfficerController {
             int closedCount = 0;
             
             for (ComplaintDTO complaint : assignedComplaints) {
-                String status = complaint.getStatus();
+                String status = complaint.getStatus() != null ? complaint.getStatus().toString() : null;
                 if (status == null) continue;
                 
                 if (status.equals("ASSIGNED") || status.equals("PENDING") || status.equals("PENDING_EVIDENCE")) {
@@ -93,13 +93,7 @@ public class PoliceOfficerController {
             
             // Get 5 most recent complaints
             List<ComplaintDTO> recentComplaints = assignedComplaints.stream()
-                .sorted((c1, c2) -> {
-                    if (c1.getDateLastUpdated() != null && c2.getDateLastUpdated() != null) {
-                        return c2.getDateLastUpdated().compareTo(c1.getDateLastUpdated());
-                    } else {
-                        return 0;
-                    }
-                })
+                .sorted((c1, c2) -> c2.getUpdatedAt().compareTo(c1.getUpdatedAt()))
                 .limit(5)
                 .collect(Collectors.toList());
             

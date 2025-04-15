@@ -171,6 +171,12 @@ public class AdminController {
             @RequestBody AssignmentRequest request) {
         log.info("Assigning complaint with id: {} to officer with id: {}", complaintId, request.getOfficerId());
         ComplaintDTO updatedComplaint = complaintService.assignComplaintToOfficer(complaintId, request.getOfficerId());
+        
+        // If a status is provided in the request, update it
+        if (request.getStatus() != null && !request.getStatus().isEmpty()) {
+            updatedComplaint = complaintService.updateComplaintStatus(complaintId, request.getStatus(), request.getNotes());
+        }
+        
         return ResponseEntity.ok(updatedComplaint);
     }
     

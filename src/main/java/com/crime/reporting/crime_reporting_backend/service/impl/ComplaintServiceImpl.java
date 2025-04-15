@@ -249,6 +249,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaint.setDateLastUpdated(LocalDateTime.now());
         
         Complaint updatedComplaint = complaintRepository.save(complaint);
+        log.info("Successfully assigned complaint {} to officer {}. Assigned officer ID in DB: {}", 
+                complaintId, officerId, updatedComplaint.getAssignedOfficer() != null ? updatedComplaint.getAssignedOfficer().getId() : "null");
+        
         return mapToDTO(updatedComplaint);
     }
     
