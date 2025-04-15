@@ -432,8 +432,14 @@ public class AdminServiceImpl implements AdminService {
         // Department statistics
         long totalDepartments = departmentRepository.count();
         
-        // Case statistics
-        long activeCases = caseFileRepository.countByStatus(CaseStatus.OPEN);
+        // Count active cases from complaints (not case files)
+        long activeCases = complaintRepository.countByStatusIn(
+                Arrays.asList(
+                        ComplaintStatus.ASSIGNED,
+                        ComplaintStatus.INVESTIGATING,
+                        ComplaintStatus.PENDING_EVIDENCE
+                )
+        );
         
         // Complaints by status
         Map<String, Long> complaintsByStatus = new HashMap<>();
@@ -499,6 +505,16 @@ public class AdminServiceImpl implements AdminService {
     
     private PoliceOfficerResponse mapToPoliceOfficerResponse(PoliceOfficer officer) {
         User user = officer.getUser();
+        
+        // Count active cases from assigned complaints instead of case files
+        long activeCasesCount = complaintRepository.findByAssignedOfficerId(officer.getId())
+            .stream()
+            .filter(complaint -> 
+                complaint.getStatus() == ComplaintStatus.ASSIGNED || 
+                complaint.getStatus() == ComplaintStatus.INVESTIGATING || 
+                complaint.getStatus() == ComplaintStatus.PENDING_EVIDENCE)
+            .count();
+        
         return PoliceOfficerResponse.builder()
                 .id(officer.getId())
                 .userId(user.getId())
@@ -513,9 +529,7 @@ public class AdminServiceImpl implements AdminService {
                 .specialization(officer.getSpecialization())
                 .contactInfo(officer.getContactInfo())
                 .jurisdiction(officer.getJurisdiction())
-                .activeCasesCount(officer.getCaseFiles() != null ? (int) officer.getCaseFiles().stream()
-                        .filter(cf -> cf.getStatus() == CaseStatus.OPEN)
-                        .count() : 0)
+                .activeCasesCount((int) activeCasesCount)
                 .createdAt(officer.getCreatedAt())
                 .updatedAt(officer.getUpdatedAt())
                 .build();

@@ -138,6 +138,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
+    @Transactional
     public List<ComplaintDTO> getComplaintsByPoliceOfficerId(Long policeOfficerId) {
         log.info("Fetching complaints for police officer with ID: {}", policeOfficerId);
         
