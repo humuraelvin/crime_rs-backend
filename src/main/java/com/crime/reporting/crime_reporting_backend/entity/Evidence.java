@@ -24,11 +24,14 @@ public class Evidence {
     private Complaint complaint;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
+    @Column(name = "type", nullable = false)
     private EvidenceType evidenceType;
     
     @Column(nullable = false)
     private String fileName;
+    
+    @Column(nullable = false)
+    private String fileUrl;
     
     @Column
     private String originalFileName;
@@ -45,11 +48,11 @@ public class Evidence {
     @Column
     private String metadata;
     
-    @Column(nullable = true)
+    @Column(name = "uploaded_at", nullable = false)
     private LocalDateTime uploadDate;
     
     @ManyToOne
-    @JoinColumn(name = "uploaded_by")
+    @JoinColumn(name = "uploaded_by", nullable = false)
     private User uploadedBy;
     
     @PrePersist

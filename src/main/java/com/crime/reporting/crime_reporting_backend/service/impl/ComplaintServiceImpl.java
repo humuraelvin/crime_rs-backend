@@ -79,6 +79,10 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint complaint = complaintRepository.findById(complaintDTO.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with ID: " + complaintDTO.getId()));
         
+        // Get the user who is creating the complaint
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
+        
         List<Evidence> evidences = new ArrayList<>();
         
         for (MultipartFile file : files) {
@@ -87,11 +91,13 @@ public class ComplaintServiceImpl implements ComplaintService {
             Evidence evidence = new Evidence();
             evidence.setComplaint(complaint);
             evidence.setFileName(fileName);
+            evidence.setFileUrl("/uploads/" + fileName);
             evidence.setOriginalFileName(file.getOriginalFilename());
             evidence.setFileType(file.getContentType());
             evidence.setFileSize(file.getSize());
             evidence.setEvidenceType(determineEvidenceType(file.getContentType()));
             evidence.setUploadDate(LocalDateTime.now());
+            evidence.setUploadedBy(user);  // Set the user who uploaded the file
             
             evidences.add(evidence);
         }
@@ -108,7 +114,9 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
     
     private EvidenceType determineEvidenceType(String contentType) {
-        if (contentType == null) return EvidenceType.OTHER;
+        if (contentType == null) {
+            return EvidenceType.OTHER;
+        }
         
         if (contentType.startsWith("image/")) {
             return EvidenceType.IMAGE;
