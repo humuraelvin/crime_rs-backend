@@ -167,4 +167,13 @@ public interface ComplaintService {
      * @param id the ID of the complaint to delete
      */
     void deleteComplaint(Long id);
+
+    /**
+     * Updates a complaint's details (description, location, crimeType)
+     *
+     * @param complaintId the ID of the complaint to update
+     * @param request the updated complaint data
+     * @return the updated complaint
+     */
+    ComplaintDTO updateComplaintInfo(Long complaintId, ComplaintRequest request);
 } 

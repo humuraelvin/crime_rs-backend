@@ -103,6 +103,35 @@ public class ComplaintController {
         }
     }
 
+    @PostMapping("/{id}/update")
+    public ResponseEntity<ComplaintDTO> updateComplaint(
+            @PathVariable Long id,
+            @Valid @RequestBody ComplaintRequest request,
+            @AuthenticationPrincipal User currentUser) {
+        log.info("Updating complaint ID: {} by user ID: {}", id, currentUser.getId());
+        
+        // Verify that this complaint belongs to the current user
+        ComplaintDTO existingComplaint = complaintService.getComplaintById(id);
+        if (!existingComplaint.getUserId().equals(currentUser.getId())) {
+            log.warn("User {} attempted to update complaint {} belonging to user {}", 
+                    currentUser.getId(), id, existingComplaint.getUserId());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
+        // Verify that the complaint is in an editable state (SUBMITTED status)
+        if (!ComplaintStatus.SUBMITTED.name().equals(existingComplaint.getStatus())) {
+            log.warn("User {} attempted to update complaint {} with non-editable status: {}", 
+                    currentUser.getId(), id, existingComplaint.getStatus());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+        
+        // Update the complaint with new information
+        request.setUserId(currentUser.getId());
+        ComplaintDTO updatedComplaint = complaintService.updateComplaintInfo(id, request);
+        return ResponseEntity.ok(updatedComplaint);
+    }
+
     @PutMapping("/{id}/status")
     public ResponseEntity<ComplaintDTO> updateComplaintStatus(
             @PathVariable Long id,

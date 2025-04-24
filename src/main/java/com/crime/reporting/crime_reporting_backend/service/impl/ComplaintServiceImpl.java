@@ -14,6 +14,7 @@ import com.crime.reporting.crime_reporting_backend.entity.Evidence;
 import com.crime.reporting.crime_reporting_backend.entity.EvidenceType;
 import com.crime.reporting.crime_reporting_backend.entity.User;
 import com.crime.reporting.crime_reporting_backend.exception.ResourceNotFoundException;
+import com.crime.reporting.crime_reporting_backend.exception.InvalidOperationException;
 import com.crime.reporting.crime_reporting_backend.repository.ComplaintRepository;
 import com.crime.reporting.crime_reporting_backend.repository.EvidenceRepository;
 import com.crime.reporting.crime_reporting_backend.repository.PoliceOfficerRepository;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -402,6 +404,54 @@ public class ComplaintServiceImpl implements ComplaintService {
         complaintRepository.delete(complaint);
     }
     
+    /**
+     * Updates a complaint's basic information (type, description, location)
+     * Only works for complaints in SUBMITTED status
+     *
+     * @param complaintId the complaint to update
+     * @param request the updated information
+     * @return the updated complaint DTO
+     */
+    @Override
+    public ComplaintDTO updateComplaintInfo(Long complaintId, ComplaintRequest request) {
+        Complaint complaint = complaintRepository.findById(complaintId)
+                .orElseThrow(() -> new ResourceNotFoundException("Complaint not found with id: " + complaintId));
+        
+        // Only allow updates for complaints in SUBMITTED status
+        if (complaint.getStatus() != ComplaintStatus.SUBMITTED) {
+            log.warn("Cannot update complaint {} that is not in SUBMITTED status. Current status: {}", 
+                     complaintId, complaint.getStatus());
+            throw new InvalidOperationException("Cannot update complaint that is not in SUBMITTED status");
+        }
+        
+        // Only allow users to update their own complaints
+        if (!complaint.getUser().getId().equals(request.getUserId())) {
+            log.warn("User {} attempted to update complaint {} belonging to user {}", 
+                     request.getUserId(), complaintId, complaint.getUser().getId());
+            throw new AccessDeniedException("You can only update your own complaints");
+        }
+        
+        // Update the modifiable fields
+        if (request.getCrimeType() != null) {
+            complaint.setCrimeType(request.getCrimeType());
+        }
+        
+        if (request.getDescription() != null) {
+            complaint.setDescription(request.getDescription());
+        }
+        
+        if (request.getLocation() != null) {
+            complaint.setLocation(request.getLocation());
+        }
+        
+        complaint.setDateLastUpdated(LocalDateTime.now());
+        
+        Complaint updatedComplaint = complaintRepository.save(complaint);
+        log.info("Updated complaint: {} with new information", complaintId);
+        
+        return mapToDTO(updatedComplaint);
+    }
+    
     private ComplaintDTO mapToDTO(Complaint complaint) {
         return ComplaintDTO.builder()
                 .id(complaint.getId())
@@ -409,7 +459,7 @@ public class ComplaintServiceImpl implements ComplaintService {
                 .description(complaint.getDescription())
                 .location(complaint.getLocation())
                 .incidentDate(complaint.getDateFiled().toString())  // Using dateFiled as incidentDate if incidentDate doesn't exist
-                .status(complaint.getStatus())
+                .status(complaint.getStatus().name())
                 .category(complaint.getCrimeType())
                 .userId(complaint.getUser() != null ? complaint.getUser().getId() : null)
                 .userName(complaint.getUser() != null ? 

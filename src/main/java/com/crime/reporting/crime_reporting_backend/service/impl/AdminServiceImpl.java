@@ -193,25 +193,34 @@ public class AdminServiceImpl implements AdminService {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             LocalDateTime now = LocalDateTime.now();
             
+            // Log the SQL and values for debugging
+            log.info("Department entity for INSERT: {}", department);
+            log.info("Department ID for INSERT: {}", department.getId());
+            
             String sql = "INSERT INTO police_officers " +
-                        "(badge_number, contact_info, jurisdiction, rank, specialization, department_id, user_id, created_at, updated_at) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "(badge_number, contact_info, jurisdiction, rank, specialization, department, user_id, created_at, updated_at, department_id) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             jdbcTemplate.update(connection -> {
-                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
                 ps.setString(1, request.getBadgeNumber());
                 ps.setString(2, request.getContactInfo());
                 ps.setString(3, request.getJurisdiction());
                 ps.setString(4, request.getRank());
                 ps.setString(5, request.getSpecialization());
-                ps.setLong(6, department.getId());
+                ps.setString(6, department.getName());
                 ps.setLong(7, savedUser.getId());
                 ps.setTimestamp(8, Timestamp.valueOf(now));
                 ps.setTimestamp(9, Timestamp.valueOf(now));
+                ps.setLong(10, department.getId());
                 return ps;
             }, keyHolder);
             
-            Long officerId = keyHolder.getKey().longValue();
+            Number key = keyHolder.getKey();
+            if (key == null) {
+                throw new RuntimeException("Failed to retrieve the generated ID for the police officer");
+            }
+            Long officerId = key.longValue();
             log.info("Police officer created successfully with id: {}", officerId);
             
             // Create a proper PoliceOfficer object and map it to a response

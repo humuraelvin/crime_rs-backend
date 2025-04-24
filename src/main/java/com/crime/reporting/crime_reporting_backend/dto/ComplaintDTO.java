@@ -19,7 +19,7 @@ public class ComplaintDTO {
     private String title;
     private String description;
     private String location;
-    private ComplaintStatus status;
+    private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private CrimeType category;
