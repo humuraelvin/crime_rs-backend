@@ -20,8 +20,11 @@ public class UserResponse {
     private String lastName;
     private String email;
     private String phoneNumber;
+    private String address;
     private Role role;
     private boolean mfaEnabled;
+    private boolean emailNotifications;
+    private boolean smsNotifications;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
@@ -37,8 +40,11 @@ public class UserResponse {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
                 .role(user.getRole())
                 .mfaEnabled(user.isMfaEnabled())
+                .emailNotifications(user.isEmailNotifications())
+                .smsNotifications(user.isSmsNotifications())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();

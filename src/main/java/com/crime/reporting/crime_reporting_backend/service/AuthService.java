@@ -1,5 +1,6 @@
 package com.crime.reporting.crime_reporting_backend.service;
 
+import com.crime.reporting.crime_reporting_backend.dto.UserResponse;
 import com.crime.reporting.crime_reporting_backend.dto.request.*;
 import com.crime.reporting.crime_reporting_backend.dto.response.AuthResponse;
 import com.crime.reporting.crime_reporting_backend.dto.response.TwoFactorAuthSetupResponse;
@@ -7,18 +8,8 @@ import com.crime.reporting.crime_reporting_backend.entity.Role;
 import com.crime.reporting.crime_reporting_backend.entity.User;
 import com.crime.reporting.crime_reporting_backend.repository.UserRepository;
 import com.crime.reporting.crime_reporting_backend.security.JwtService;
-import dev.samstevens.totp.code.CodeGenerator;
-import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
-import dev.samstevens.totp.qr.QrData;
-import dev.samstevens.totp.qr.QrGenerator;
-import dev.samstevens.totp.qr.ZxingPngQrGenerator;
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
-import dev.samstevens.totp.secret.SecretGenerator;
-import dev.samstevens.totp.time.SystemTimeProvider;
-import dev.samstevens.totp.time.TimeProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,21 +18,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.util.Base64;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -53,7 +38,6 @@ public class AuthService {
     
     // Replace Redis with in-memory maps
     private final Map<String, String> tokenBlacklist = new ConcurrentHashMap<>();
-    private final Map<String, String> mfaSetupSecrets = new ConcurrentHashMap<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Transactional
@@ -75,13 +59,14 @@ public class AuthService {
                 .mfaEnabled(request.isEnableMfa())
                 .build();
 
-        // If MFA is enabled, generate a secret
-        if (request.isEnableMfa()) {
-            user.setMfaSecret(generateMfaSetupSecret(request.getEmail()));
-            // Save the user
-            User savedUser = userRepository.save(user);
+        // Save the user
+        User savedUser = userRepository.save(user);
 
-            // Return response without tokens, requiring MFA verification
+        // For MFA-enabled users, no tokens yet - they need to verify
+        if (request.isEnableMfa()) {
+            // Generate and send verification code via email
+            mfaService.generateAndSendEmailVerificationCode(savedUser.getEmail());
+            
             return AuthResponse.builder()
                     .userId(savedUser.getId())
                     .firstName(savedUser.getFirstName())
@@ -93,10 +78,7 @@ public class AuthService {
                     .build();
         }
 
-        // Save the user
-        User savedUser = userRepository.save(user);
-
-        // Generate tokens
+        // Generate tokens for non-MFA users
         String accessToken = jwtService.generateToken(createClaims(savedUser), savedUser);
         String refreshToken = jwtService.generateRefreshToken(savedUser);
 
@@ -132,6 +114,9 @@ public class AuthService {
 
         // Check if MFA is enabled and no MFA code was provided
         if (user.isMfaEnabled() && (request.getMfaCode() == null || request.getMfaCode().isEmpty())) {
+            // Generate and send verification code via email
+            mfaService.generateAndSendEmailVerificationCode(user.getEmail());
+            
             return AuthResponse.builder()
                     .userId(user.getId())
                     .firstName(user.getFirstName())
@@ -145,8 +130,8 @@ public class AuthService {
 
         // If MFA is enabled and code was provided, verify it
         if (user.isMfaEnabled() && request.getMfaCode() != null) {
-            if (!verifyMfaSetup(request.getEmail(), request.getMfaCode())) {
-                throw new RuntimeException("Invalid MFA code");
+            if (!mfaService.validateVerificationCode(request.getEmail(), request.getMfaCode())) {
+                throw new RuntimeException("Invalid verification code");
             }
         }
 
@@ -205,8 +190,8 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
         // Verify the MFA code
-        if (!verifyMfaSetup(email, mfaCode)) {
-            throw new RuntimeException("Invalid MFA code");
+        if (!mfaService.validateVerificationCode(email, mfaCode)) {
+            throw new RuntimeException("Invalid verification code");
         }
         
         // Generate tokens
@@ -228,16 +213,7 @@ public class AuthService {
     }
 
     public void revokeToken(String token) {
-        String email = jwtService.extractUsername(token);
-        long ttl = jwtService.getExpirationTime(token) - System.currentTimeMillis();
-        
-        if (ttl > 0) {
-            // Add token to blacklist with expiration
-            tokenBlacklist.put("BL_" + token, email);
-            
-            // Schedule removal from blacklist after token expiration
-            scheduler.schedule(() -> tokenBlacklist.remove("BL_" + token), ttl, TimeUnit.MILLISECONDS);
-        }
+        tokenBlacklist.put(token, "revoked");
     }
 
     public void logout(String token) {
@@ -245,122 +221,47 @@ public class AuthService {
     }
 
     public TwoFactorAuthSetupResponse generateMfaSecret(String email) {
+        // Get the user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        String secret = mfaService.generateSecret();
-        String qrCodeImageUri = mfaService.generateQrCodeImageUri(email, secret);
+        // Generate and send verification code via email
+        String verificationCode = mfaService.generateAndSendEmailVerificationCode(email);
         
-        // Store in memory temporarily until confirmed
-        mfaSetupSecrets.put("MFA_SETUP_" + email, secret);
-        
-        // Schedule removal after 10 minutes
-        scheduler.schedule(() -> mfaSetupSecrets.remove("MFA_SETUP_" + email), 10, TimeUnit.MINUTES);
-        
+        // Return response with message (no QR code or secret key)
         return TwoFactorAuthSetupResponse.builder()
-                .secretKey(secret)
-                .qrCodeImageUri(qrCodeImageUri)
+                .message("A verification code has been sent to your email. Please check your inbox.")
                 .build();
     }
-    
+
     public void enableMfa(String email, String mfaCode) {
+        // Get the user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        String secretKey = mfaSetupSecrets.get("MFA_SETUP_" + email);
-        if (secretKey == null) {
-            throw new RuntimeException("MFA setup expired. Please try again.");
+        // Verify the MFA code
+        if (!mfaService.validateVerificationCode(email, mfaCode)) {
+            throw new RuntimeException("Invalid verification code");
         }
         
-        if (!mfaService.validateTotp(secretKey, mfaCode)) {
-            throw new RuntimeException("Invalid MFA code");
-        }
-        
-        // Update user with MFA enabled and save the secret
+        // Update user to enable MFA
         user.setMfaEnabled(true);
-        user.setMfaSecret(secretKey);
         userRepository.save(user);
-        
-        // Clean up the temporary secret
-        mfaSetupSecrets.remove("MFA_SETUP_" + email);
     }
-    
+
     public void disableMfa(String email, String password) {
+        // Get the user
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
-        // Verify password before disabling MFA
+        // Check credentials
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
         
-        // Update user with MFA disabled
+        // Update user to disable MFA
         user.setMfaEnabled(false);
-        user.setMfaSecret(null);
         userRepository.save(user);
-    }
-
-    public String generateMfaSetupSecret(String email) {
-        String secret = mfaService.generateSecret();
-        
-        // Store in memory with expiration (10 minutes)
-        mfaSetupSecrets.put("MFA_SETUP_" + email, secret);
-        
-        // Schedule removal after 10 minutes
-        scheduler.schedule(() -> mfaSetupSecrets.remove("MFA_SETUP_" + email), 10, TimeUnit.MINUTES);
-        
-        return secret;
-    }
-
-    public boolean verifyMfaSetup(String email, String code) {
-        String cachedSecret = mfaSetupSecrets.get("MFA_SETUP_" + email);
-        
-        if (cachedSecret == null) {
-            throw new IllegalStateException("MFA setup has expired. Please restart the setup process.");
-        }
-        
-        boolean isValid = mfaService.validateTotp(cachedSecret, code);
-        
-        if (isValid) {
-            // Remove from temporary cache
-            mfaSetupSecrets.remove("MFA_SETUP_" + email);
-            
-            // Update user with the secret
-            userService.enableMfa(email, cachedSecret);
-        }
-        
-        return isValid;
-    }
-
-    private String generateSecret() {
-        SecretGenerator secretGenerator = new DefaultSecretGenerator();
-        return secretGenerator.generate();
-    }
-
-    private String generateQrCodeImageUri(String email, String secret) {
-        QrData data = new QrData.Builder()
-                .label(email)
-                .secret(secret)
-                .issuer("Crime Reporting System")
-                .algorithm(dev.samstevens.totp.code.HashingAlgorithm.SHA1)
-                .digits(6)
-                .period(30)
-                .build();
-
-        QrGenerator generator = new ZxingPngQrGenerator();
-        try {
-            byte[] imageData = generator.generate(data);
-            return getDataUriForImage(imageData, generator.getImageMimeType());
-        } catch (dev.samstevens.totp.exceptions.QrGenerationException e) {
-            throw new RuntimeException("Failed to generate QR code", e);
-        }
-    }
-
-    private boolean verifyCode(String code, String secret) {
-        TimeProvider timeProvider = new SystemTimeProvider();
-        CodeGenerator codeGenerator = new DefaultCodeGenerator();
-        CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
-        return verifier.isValidCode(secret, code);
     }
 
     private Map<String, Object> createClaims(User user) {
@@ -368,5 +269,106 @@ public class AuthService {
         claims.put("userId", user.getId());
         claims.put("role", user.getRole());
         return claims;
+    }
+
+    /**
+     * Changes the user's password
+     * @param currentPassword the user's current password
+     * @param newPassword the new password to set
+     */
+    @Transactional
+    public void changePassword(String currentPassword, String newPassword) {
+        // Get current authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        
+        // Get the user from the repository
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // Verify current password
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+        
+        // Update to new password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        
+        log.info("Password changed successfully for user: {}", email);
+    }
+
+    /**
+     * Get the user profile for the currently authenticated user
+     * @param email the email of the user
+     * @return the user profile data
+     */
+    @Transactional(readOnly = true)
+    public UserResponse getUserProfile(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        return UserResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .role(user.getRole())
+                .emailNotifications(user.isEmailNotifications())
+                .smsNotifications(user.isSmsNotifications())
+                .mfaEnabled(user.isMfaEnabled())
+                .build();
+    }
+    
+    /**
+     * Update the user profile for the currently authenticated user
+     * @param email the email of the user
+     * @param request the update request containing the new profile data
+     * @return the updated user profile
+     */
+    @Transactional
+    public UserResponse updateUserProfile(String email, UpdateUserProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        // Update user fields if they are provided in the request
+        if (request.getFirstName() != null && !request.getFirstName().isEmpty()) {
+            user.setFirstName(request.getFirstName());
+        }
+        
+        if (request.getLastName() != null && !request.getLastName().isEmpty()) {
+            user.setLastName(request.getLastName());
+        }
+        
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+        
+        // Check if notification preferences were updated
+        if (request.getEmailNotifications() != null) {
+            user.setEmailNotifications(request.getEmailNotifications());
+        }
+        
+        if (request.getSmsNotifications() != null) {
+            user.setSmsNotifications(request.getSmsNotifications());
+        }
+        
+        User updatedUser = userRepository.save(user);
+        log.info("Profile updated for user: {}", email);
+        
+        return UserResponse.builder()
+                .id(updatedUser.getId())
+                .firstName(updatedUser.getFirstName())
+                .lastName(updatedUser.getLastName())
+                .email(updatedUser.getEmail())
+                .phoneNumber(updatedUser.getPhoneNumber())
+                .address(updatedUser.getAddress())
+                .role(updatedUser.getRole())
+                .emailNotifications(updatedUser.isEmailNotifications())
+                .smsNotifications(updatedUser.isSmsNotifications())
+                .mfaEnabled(updatedUser.isMfaEnabled())
+                .build();
     }
 } 

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TwoFactorAuthSetupResponse {
-    private String secretKey;
-    private String qrCodeImageUri;
+    private String message;
 } 

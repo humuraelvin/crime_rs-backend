@@ -52,6 +52,14 @@ public class User implements UserDetails {
     
     private String mfaSecret;
     
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    @Builder.Default
+    private boolean emailNotifications = true;
+    
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Builder.Default
+    private boolean smsNotifications = false;
+    
     @CreationTimestamp
     private LocalDateTime createdAt;
     

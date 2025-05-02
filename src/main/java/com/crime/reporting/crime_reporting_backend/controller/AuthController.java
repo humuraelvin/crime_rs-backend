@@ -1,5 +1,6 @@
 package com.crime.reporting.crime_reporting_backend.controller;
 
+import com.crime.reporting.crime_reporting_backend.dto.UserResponse;
 import com.crime.reporting.crime_reporting_backend.dto.request.*;
 import com.crime.reporting.crime_reporting_backend.dto.response.AuthResponse;
 import com.crime.reporting.crime_reporting_backend.dto.response.TwoFactorAuthSetupResponse;
@@ -7,6 +8,7 @@ import com.crime.reporting.crime_reporting_backend.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -59,5 +61,23 @@ public class AuthController {
     public ResponseEntity<Void> disableMfa(@Valid @RequestBody DisableMfaRequest request) {
         authService.disableMfa(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        authService.changePassword(request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/users/profile")
+    public ResponseEntity<UserResponse> getUserProfile(Authentication authentication) {
+        return ResponseEntity.ok(authService.getUserProfile(authentication.getName()));
+    }
+
+    @PutMapping("/users/profile")
+    public ResponseEntity<UserResponse> updateUserProfile(
+            Authentication authentication,
+            @Valid @RequestBody UpdateUserProfileRequest request) {
+        return ResponseEntity.ok(authService.updateUserProfile(authentication.getName(), request));
     }
 } 

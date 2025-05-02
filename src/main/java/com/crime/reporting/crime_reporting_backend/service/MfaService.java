@@ -1,72 +1,119 @@
 package com.crime.reporting.crime_reporting_backend.service;
 
-import dev.samstevens.totp.code.CodeGenerator;
-import dev.samstevens.totp.code.CodeVerifier;
-import dev.samstevens.totp.code.DefaultCodeGenerator;
-import dev.samstevens.totp.code.DefaultCodeVerifier;
-import dev.samstevens.totp.code.HashingAlgorithm;
-import dev.samstevens.totp.qr.QrData;
-import dev.samstevens.totp.qr.QrGenerator;
-import dev.samstevens.totp.qr.ZxingPngQrGenerator;
-import dev.samstevens.totp.secret.DefaultSecretGenerator;
-import dev.samstevens.totp.secret.SecretGenerator;
-import dev.samstevens.totp.time.SystemTimeProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static dev.samstevens.totp.util.Utils.getDataUriForImage;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class MfaService {
-
-    /**
-     * Generates a new secret key for MFA
-     * @return the generated secret
-     */
-    public String generateSecret() {
-        SecretGenerator secretGenerator = new DefaultSecretGenerator();
-        return secretGenerator.generate();
-    }
+    private final EmailService emailService;
+    
+    // Store verification codes with expiration times
+    // Key: email, Value: [code, expirationTime]
+    private final Map<String, Object[]> verificationCodes = new ConcurrentHashMap<>();
+    
+    // Code expiration time in minutes
+    private static final int CODE_EXPIRATION_MINUTES = 10;
     
     /**
-     * Generates a QR code image URI for MFA setup
+     * Generates a verification code and sends it to the user's email
      * @param email the user's email
-     * @param secret the MFA secret
-     * @return a data URI for the QR code image
+     * @return the generated verification code
      */
-    public String generateQrCodeImageUri(String email, String secret) {
-        QrData qrData = new QrData.Builder()
-                .label(email)
-                .secret(secret)
-                .issuer("Crime Reporting System")
-                .algorithm(HashingAlgorithm.SHA1)
-                .digits(6)
-                .period(30)
-                .build();
+    public String generateAndSendEmailVerificationCode(String email) {
+        String code = generateVerificationCode();
+        LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(CODE_EXPIRATION_MINUTES);
         
-        QrGenerator qrGenerator = new ZxingPngQrGenerator();
-        byte[] imageData;
+        // Store the code with expiration time
+        verificationCodes.put(email, new Object[]{code, expirationTime});
         
-        try {
-            imageData = qrGenerator.generate(qrData);
-        } catch (Exception e) {
-            throw new RuntimeException("Error generating QR code", e);
-        }
+        // Send the code via email
+        sendVerificationEmail(email, code);
         
-        return getDataUriForImage(imageData, qrGenerator.getImageMimeType());
+        log.info("Generated verification code for {}: {}", email, code);
+        return code;
     }
     
     /**
-     * Validates a TOTP code against a secret
-     * @param secret the MFA secret
-     * @param code the TOTP code to validate
+     * Validates an email verification code
+     * @param email the user's email
+     * @param code the verification code to validate
      * @return true if the code is valid, false otherwise
      */
-    public boolean validateTotp(String secret, String code) {
-        CodeVerifier verifier = new DefaultCodeVerifier(
-                new DefaultCodeGenerator(),
-                new SystemTimeProvider()
-        );
+    public boolean validateVerificationCode(String email, String code) {
+        Object[] storedData = verificationCodes.get(email);
         
-        return verifier.isValidCode(secret, code);
+        if (storedData == null) {
+            log.warn("No verification code found for {}", email);
+            return false;
+        }
+        
+        String storedCode = (String) storedData[0];
+        LocalDateTime expirationTime = (LocalDateTime) storedData[1];
+        
+        // Check if the code has expired
+        if (LocalDateTime.now().isAfter(expirationTime)) {
+            log.warn("Verification code for {} has expired", email);
+            verificationCodes.remove(email);
+            return false;
+        }
+        
+        // Validate the code
+        boolean isValid = storedCode.equals(code);
+        
+        // If valid, remove the code to prevent reuse
+        if (isValid) {
+            log.info("Valid verification code for {}", email);
+            verificationCodes.remove(email);
+        } else {
+            log.warn("Invalid verification code attempt for {}", email);
+        }
+        
+        return isValid;
+    }
+    
+    /**
+     * Generate a random 6-digit verification code
+     * @return a 6-digit numeric code
+     */
+    private String generateVerificationCode() {
+        SecureRandom random = new SecureRandom();
+        int code = 100000 + random.nextInt(900000); // 6-digit code
+        return String.valueOf(code);
+    }
+    
+    /**
+     * Send verification code to user's email
+     * @param email the user's email
+     * @param code the verification code
+     */
+    private void sendVerificationEmail(String email, String code) {
+        String subject = "Crime Reporting System - Login Verification Code";
+        String message = "Hello,\n\n" +
+                "Your verification code for Crime Reporting System login is: " + code + "\n\n" +
+                "This code will expire in " + CODE_EXPIRATION_MINUTES + " minutes.\n\n" +
+                "If you did not request this code, please ignore this email or contact support if you believe this is unauthorized activity.\n\n" +
+                "Thank you,\n" +
+                "Crime Reporting System Team";
+        
+        emailService.sendEmail(email, subject, message);
+    }
+    
+    /**
+     * Clear expired codes (can be called periodically)
+     */
+    public void clearExpiredCodes() {
+        LocalDateTime now = LocalDateTime.now();
+        verificationCodes.entrySet().removeIf(entry -> {
+            LocalDateTime expiration = (LocalDateTime) entry.getValue()[1];
+            return now.isAfter(expiration);
+        });
     }
 } 
