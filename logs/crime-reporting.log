@@ -1,95 +1,413 @@
-2025-05-02T17:03:25.710+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 15040 (C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes started by Humura in C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend)
-2025-05-02T17:03:25.715+02:00 DEBUG 15040 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
-2025-05-02T17:03:25.716+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
-2025-05-02T17:03:26.980+02:00  INFO 15040 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-05-02T17:03:27.053+02:00  INFO 15040 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 8 JPA repository interfaces.
-2025-05-02T17:03:28.282+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-05-02T17:03:28.296+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-05-02T17:03:28.296+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
-2025-05-02T17:03:28.365+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-05-02T17:03:28.365+02:00  INFO 15040 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2596 ms
-2025-05-02T17:03:28.727+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-05-02T17:03:28.803+02:00  INFO 15040 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
-2025-05-02T17:03:28.832+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-05-02T17:03:29.079+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-05-02T17:03:29.105+02:00  INFO 15040 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-05-02T17:03:29.292+02:00  INFO 15040 --- [crime-reporting-backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@776a3365
-2025-05-02T17:03:29.295+02:00  INFO 15040 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-05-02T17:03:29.349+02:00  WARN 15040 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-05-02T17:03:29.365+02:00  INFO 15040 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 17.4
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-05-02T17:03:30.416+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-05-02T17:03:30.948+02:00  INFO 15040 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-05-02T17:03:31.216+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-05-02T17:03:32.059+02:00 DEBUG 15040 --- [crime-reporting-backend] [main] c.c.r.c.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
-2025-05-02T17:03:32.571+02:00  INFO 15040 --- [crime-reporting-backend] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-05-02T17:03:32.571+02:00  WARN 15040 --- [crime-reporting-backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-05-02T17:03:33.147+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.config.WebConfig                 : Serving files from: C:/Users/elvin/Documents/Idea Projects/crime-reporting-system/crime-reporting-backend/uploads/
-2025-05-02T17:03:33.351+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2025-05-02T17:03:33.904+02:00  INFO 15040 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-05-02T17:03:33.912+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Started CrimeReportingBackendApplication in 8.801 seconds (process running for 10.046)
-2025-05-02T17:03:33.919+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : Checking for evidence records with null values...
-2025-05-02T17:03:33.996+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : No evidence records with null values found.
-2025-05-02T17:03:34.021+02:00  INFO 15040 --- [crime-reporting-backend] [main] c.c.r.c.config.AdminUserInitializer      : Admin user already exists, skipping initialization
-2025-05-02T17:03:34.340+02:00  INFO 15040 --- [crime-reporting-backend] [RMI TCP Connection(4)-10.11.72.238] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-02T17:03:34.341+02:00  INFO 15040 --- [crime-reporting-backend] [RMI TCP Connection(4)-10.11.72.238] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-05-02T17:03:34.347+02:00  INFO 15040 --- [crime-reporting-backend] [RMI TCP Connection(4)-10.11.72.238] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
-2025-05-02T17:15:51.513+02:00  INFO 15040 --- [crime-reporting-backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-05-02T17:15:51.717+02:00  INFO 15040 --- [crime-reporting-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-05-02T17:15:52.067+02:00  INFO 15040 --- [crime-reporting-backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-05-02T17:15:52.179+02:00  INFO 15040 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-05-02T17:15:52.315+02:00  INFO 15040 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-05-02T17:16:02.022+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 8164 (C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes started by Humura in C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend)
-2025-05-02T17:16:02.024+02:00 DEBUG 8164 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
-2025-05-02T17:16:02.024+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
-2025-05-02T17:16:03.012+02:00  INFO 8164 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-05-02T17:16:03.082+02:00  INFO 8164 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 8 JPA repository interfaces.
-2025-05-02T17:16:03.799+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-05-02T17:16:03.812+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-05-02T17:16:03.812+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
-2025-05-02T17:16:03.869+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-05-02T17:16:03.869+02:00  INFO 8164 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1802 ms
-2025-05-02T17:16:04.154+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-05-02T17:16:04.202+02:00  INFO 8164 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
-2025-05-02T17:16:04.234+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-05-02T17:16:04.453+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-05-02T17:16:04.477+02:00  INFO 8164 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-05-02T17:16:04.640+02:00  INFO 8164 --- [crime-reporting-backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c5fd813
-2025-05-02T17:16:04.641+02:00  INFO 8164 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-05-02T17:16:04.698+02:00  WARN 8164 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-05-02T17:16:04.714+02:00  INFO 8164 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
-	Database driver: undefined/unknown
-	Database version: 17.4
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-05-02T17:16:05.747+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-05-02T17:16:06.257+02:00  INFO 8164 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-05-02T17:16:06.623+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-05-02T17:16:07.536+02:00 DEBUG 8164 --- [crime-reporting-backend] [main] c.c.r.c.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
-2025-05-02T17:16:08.093+02:00  INFO 8164 --- [crime-reporting-backend] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-05-02T17:16:08.093+02:00  WARN 8164 --- [crime-reporting-backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-05-02T17:16:08.635+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.config.WebConfig                 : Serving files from: C:/Users/elvin/Documents/Idea Projects/crime-reporting-system/crime-reporting-backend/uploads/
-2025-05-02T17:16:08.828+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2025-05-02T17:16:09.456+02:00  INFO 8164 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-05-02T17:16:09.466+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Started CrimeReportingBackendApplication in 7.903 seconds (process running for 8.719)
-2025-05-02T17:16:09.572+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.config.AdminUserInitializer      : Admin user already exists, skipping initialization
-2025-05-02T17:16:09.572+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : Checking for evidence records with null values...
-2025-05-02T17:16:09.595+02:00  INFO 8164 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : No evidence records with null values found.
-2025-05-02T17:16:09.803+02:00  INFO 8164 --- [crime-reporting-backend] [RMI TCP Connection(2)-10.11.72.238] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-02T17:16:09.803+02:00  INFO 8164 --- [crime-reporting-backend] [RMI TCP Connection(2)-10.11.72.238] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-05-02T17:16:09.805+02:00  INFO 8164 --- [crime-reporting-backend] [RMI TCP Connection(2)-10.11.72.238] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2025-05-02T17:17:16.410+02:00 ERROR 8164 --- [crime-reporting-backend] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+2025-05-05T05:31:52.997+02:00  INFO 15676 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 15676 (C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes started by Humura in C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend)
+2025-05-05T05:31:53.000+02:00 DEBUG 15676 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-05T05:31:53.001+02:00  INFO 15676 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
+2025-05-05T05:31:54.141+02:00  INFO 15676 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-05T05:31:54.197+02:00  INFO 15676 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 51 ms. Found 8 JPA repository interfaces.
+2025-05-05T05:31:55.042+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-05T05:31:55.061+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-05T05:31:55.061+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-05-05T05:31:55.134+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-05T05:31:55.134+02:00  INFO 15676 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2087 ms
+2025-05-05T05:31:55.404+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-05T05:31:55.734+02:00  INFO 15676 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-05T05:31:55.780+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-05T05:31:56.034+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-05T05:31:56.060+02:00  INFO 15676 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-05T05:31:57.251+02:00  WARN 15676 --- [crime-reporting-backend] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08004
+2025-05-05T05:31:57.251+02:00 ERROR 15676 --- [crime-reporting-backend] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : The server requested SCRAM-based authentication, but no password was provided.
+2025-05-05T05:31:57.252+02:00  WARN 15676 --- [crime-reporting-backend] [main] o.h.e.j.e.i.JdbcEnvironmentInitiator     : HHH000342: Could not obtain connection to query metadata
 
-io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-04-25T12:52:29Z. Current time: 2025-05-02T15:17:16Z, a difference of 613487409 milliseconds.  Allowed clock skew: 0 milliseconds.
+org.hibernate.exception.JDBCConnectionException: unable to obtain isolated JDBC connection [The server requested SCRAM-based authentication, but no password was provided.] [n/a]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:116) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:320) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:129) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:81) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:130) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:226) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:194) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:171) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1442) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1513) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1859) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1808) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:513) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1361) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1191) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1711) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1460) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1609) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1555) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1667) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1555) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:211) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:174) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:169) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:154) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:271) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:245) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4467) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:148) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:148) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-6.2.5.jar:6.2.5]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.4.jar:3.4.4]
+	at com.crime.reporting.crime_reporting_backend.CrimeReportingBackendApplication.main(CrimeReportingBackendApplication.java:15) ~[classes/:na]
+Caused by: org.postgresql.util.PSQLException: The server requested SCRAM-based authentication, but no password was provided.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.lambda$doAuthentication$5(ConnectionFactoryImpl.java:848) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.AuthenticationPluginManager.withPassword(AuthenticationPluginManager.java:82) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:845) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:213) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:268) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.Driver.makeConnection(Driver.java:446) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.5.jar:42.7.5]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-5.1.0.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:126) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:467) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:61) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	... 120 common frames omitted
+
+2025-05-05T05:31:57.280+02:00  WARN 15676 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-05T05:31:57.303+02:00  INFO 15676 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (null)']
+	Database driver: undefined/unknown
+	Database version: 12.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-05T05:31:58.315+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-05T05:31:58.330+02:00  INFO 15676 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-05T05:31:59.377+02:00  WARN 15676 --- [crime-reporting-backend] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08004
+2025-05-05T05:31:59.377+02:00 ERROR 15676 --- [crime-reporting-backend] [main] o.h.engine.jdbc.spi.SqlExceptionHelper   : The server requested SCRAM-based authentication, but no password was provided.
+2025-05-05T05:31:59.382+02:00 ERROR 15676 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Failed to initialize JPA EntityManagerFactory: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [The server requested SCRAM-based authentication, but no password was provided.] [n/a]
+2025-05-05T05:31:59.383+02:00 ERROR 15676 --- [crime-reporting-backend] [main] o.s.b.web.embedded.tomcat.TomcatStarter  : Error starting Tomcat context. Exception: org.springframework.beans.factory.UnsatisfiedDependencyException. Message: Error creating bean with name 'jwtAuthenticationFilter' defined in file [C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes\com\crime\reporting\crime_reporting_backend\security\JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userDetailsServiceImpl' defined in file [C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes\com\crime\reporting\crime_reporting_backend\security\UserDetailsServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in com.crime.reporting.crime_reporting_backend.repository.UserRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+2025-05-05T05:31:59.405+02:00  INFO 15676 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2025-05-05T05:31:59.410+02:00  WARN 15676 --- [crime-reporting-backend] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Unable to start web server
+2025-05-05T05:31:59.418+02:00  INFO 15676 --- [crime-reporting-backend] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2025-05-05T05:31:59.433+02:00 ERROR 15676 --- [crime-reporting-backend] [main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.context.ApplicationContextException: Unable to start web server
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:170) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621) ~[spring-context-6.2.5.jar:6.2.5]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:752) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:439) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:318) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1361) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1350) ~[spring-boot-3.4.4.jar:3.4.4]
+	at com.crime.reporting.crime_reporting_backend.CrimeReportingBackendApplication.main(CrimeReportingBackendApplication.java:15) ~[classes/:na]
+Caused by: org.springframework.boot.web.server.WebServerException: Unable to start embedded Tomcat
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:147) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:107) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:517) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:219) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:193) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:167) ~[spring-boot-3.4.4.jar:3.4.4]
+	... 8 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'jwtAuthenticationFilter' defined in file [C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes\com\crime\reporting\crime_reporting_backend\security\JwtAuthenticationFilter.class]: Unsatisfied dependency expressed through constructor parameter 1: Error creating bean with name 'userDetailsServiceImpl' defined in file [C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes\com\crime\reporting\crime_reporting_backend\security\UserDetailsServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in com.crime.reporting.crime_reporting_backend.repository.UserRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:207) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:211) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:174) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:169) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:154) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:87) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:271) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:245) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52) ~[spring-boot-3.4.4.jar:3.4.4]
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4467) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:148) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:772) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1203) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1193) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:148) ~[na:na]
+	at org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:749) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:203) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardService.startInternal(StandardService.java:415) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:870) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.apache.catalina.startup.Tomcat.start(Tomcat.java:437) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
+	at org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:128) ~[spring-boot-3.4.4.jar:3.4.4]
+	... 13 common frames omitted
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'userDetailsServiceImpl' defined in file [C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes\com\crime\reporting\crime_reporting_backend\security\UserDetailsServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'userRepository' defined in com.crime.reporting.crime_reporting_backend.repository.UserRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1381) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1218) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1667) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1555) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.5.jar:6.2.5]
+	... 54 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userRepository' defined in com.crime.reporting.crime_reporting_backend.repository.UserRepository defined in @EnableJpaRepositories declared on JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration: Cannot resolve reference to bean 'jpaSharedEM_entityManagerFactory' while setting bean property 'entityManager'
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1711) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1460) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1609) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1555) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:913) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791) ~[spring-beans-6.2.5.jar:6.2.5]
+	... 68 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'jpaSharedEM_entityManagerFactory': Cannot resolve reference to bean 'entityManagerFactory' while setting constructor argument
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveConstructorArguments(ConstructorResolver.java:691) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:513) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1361) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1191) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:563) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.5.jar:6.2.5]
+	... 81 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'entityManagerFactory' defined in class path resource [org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaConfiguration.class]: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [The server requested SCRAM-based authentication, but no password was provided.] [n/a]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1812) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:601) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:523) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:339) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:347) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:337) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:365) ~[spring-beans-6.2.5.jar:6.2.5]
+	... 93 common frames omitted
+Caused by: jakarta.persistence.PersistenceException: [PersistenceUnit: default] Unable to build Hibernate SessionFactory; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [The server requested SCRAM-based authentication, but no password was provided.] [n/a]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:431) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:400) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1859) ~[spring-beans-6.2.5.jar:6.2.5]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1808) ~[spring-beans-6.2.5.jar:6.2.5]
+	... 100 common frames omitted
+Caused by: org.hibernate.exception.JDBCConnectionException: Unable to open JDBC Connection for DDL execution [The server requested SCRAM-based authentication, but no password was provided.] [n/a]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:74) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:39) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.internal.exec.ImprovedExtractionContextImpl.getJdbcConnection(ImprovedExtractionContextImpl.java:63) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.extract.spi.ExtractionContext.getQueryResults(ExtractionContext.java:43) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.extract.internal.SequenceInformationExtractorLegacyImpl.extractMetadata(SequenceInformationExtractorLegacyImpl.java:39) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl.initializeSequences(DatabaseInformationImpl.java:66) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.extract.internal.DatabaseInformationImpl.<init>(DatabaseInformationImpl.java:60) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.internal.Helper.buildDatabaseInformation(Helper.java:185) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:93) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:280) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:144) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1430) ~[na:na]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:141) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.internal.SessionFactoryObserverForSchemaExport.sessionFactoryCreated(SessionFactoryObserverForSchemaExport.java:37) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.internal.SessionFactoryObserverChain.sessionFactoryCreated(SessionFactoryObserverChain.java:35) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:324) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:463) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1517) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:66) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390) ~[spring-orm-6.2.5.jar:6.2.5]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:419) ~[spring-orm-6.2.5.jar:6.2.5]
+	... 104 common frames omitted
+Caused by: org.postgresql.util.PSQLException: The server requested SCRAM-based authentication, but no password was provided.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.lambda$doAuthentication$5(ConnectionFactoryImpl.java:848) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.AuthenticationPluginManager.withPassword(AuthenticationPluginManager.java:82) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:845) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:213) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:268) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:54) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:273) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.Driver.makeConnection(Driver.java:446) ~[postgresql-42.7.5.jar:42.7.5]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.5.jar:42.7.5]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98) ~[HikariCP-5.1.0.jar:na]
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111) ~[HikariCP-5.1.0.jar:na]
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:126) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess.obtainConnection(JdbcEnvironmentInitiator.java:467) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.DdlTransactionIsolatorNonJtaImpl.getIsolatedConnection(DdlTransactionIsolatorNonJtaImpl.java:46) ~[hibernate-core-6.6.11.Final.jar:6.6.11.Final]
+	... 124 common frames omitted
+
+2025-05-05T05:32:32.282+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 17284 (C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes started by Humura in C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend)
+2025-05-05T05:32:32.284+02:00 DEBUG 17284 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-05T05:32:32.284+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
+2025-05-05T05:32:33.485+02:00  INFO 17284 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-05T05:32:33.555+02:00  INFO 17284 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 62 ms. Found 8 JPA repository interfaces.
+2025-05-05T05:32:34.282+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-05T05:32:34.293+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-05T05:32:34.294+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-05-05T05:32:34.350+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-05T05:32:34.350+02:00  INFO 17284 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2023 ms
+2025-05-05T05:32:34.644+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-05T05:32:34.698+02:00  INFO 17284 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-05T05:32:34.731+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-05T05:32:34.991+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-05T05:32:35.018+02:00  INFO 17284 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-05T05:32:35.189+02:00  INFO 17284 --- [crime-reporting-backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@39403943
+2025-05-05T05:32:35.191+02:00  INFO 17284 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-05T05:32:35.254+02:00  WARN 17284 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-05T05:32:35.272+02:00  INFO 17284 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.4
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-05T05:32:36.314+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-05T05:32:36.807+02:00  INFO 17284 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-05T05:32:37.132+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-05T05:32:37.971+02:00 DEBUG 17284 --- [crime-reporting-backend] [main] c.c.r.c.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
+2025-05-05T05:32:38.535+02:00  INFO 17284 --- [crime-reporting-backend] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-05-05T05:32:38.535+02:00  WARN 17284 --- [crime-reporting-backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-05-05T05:32:39.060+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.config.WebConfig                 : Serving files from: C:/Users/elvin/Documents/Idea Projects/crime-reporting-system/crime-reporting-backend/uploads/
+2025-05-05T05:32:39.280+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-05-05T05:32:39.872+02:00  INFO 17284 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-05T05:32:39.881+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Started CrimeReportingBackendApplication in 8.224 seconds (process running for 9.3)
+2025-05-05T05:32:39.975+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.config.AdminUserInitializer      : Admin user already exists, skipping initialization
+2025-05-05T05:32:39.975+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : Checking for evidence records with null values...
+2025-05-05T05:32:40.000+02:00  INFO 17284 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : No evidence records with null values found.
+2025-05-05T05:32:40.653+02:00  INFO 17284 --- [crime-reporting-backend] [RMI TCP Connection(1)-10.12.75.29] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-05T05:32:40.654+02:00  INFO 17284 --- [crime-reporting-backend] [RMI TCP Connection(1)-10.12.75.29] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-05-05T05:32:40.655+02:00  INFO 17284 --- [crime-reporting-backend] [RMI TCP Connection(1)-10.12.75.29] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-05-05T05:41:16.692+02:00 ERROR 17284 --- [crime-reporting-backend] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception
+
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-05-03T20:06:33Z. Current time: 2025-05-05T03:41:16Z, a difference of 113683686 milliseconds.  Allowed clock skew: 0 milliseconds.
 	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:427) ~[jjwt-impl-0.11.5.jar:0.11.5]
 	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529) ~[jjwt-impl-0.11.5.jar:0.11.5]
 	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589) ~[jjwt-impl-0.11.5.jar:0.11.5]
@@ -178,110 +496,82 @@ io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-04-25T12:52:29Z. Curren
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63) ~[tomcat-embed-core-10.1.39.jar:10.1.39]
 	at java.base/java.lang.Thread.run(Thread.java:1575) ~[na:na]
 
-2025-05-02T17:17:49.093+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T17:17:49.215+02:00  WARN 8164 --- [crime-reporting-backend] [http-nio-8080-exec-8] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+2025-05-05T05:41:31.521+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.controller.AdminController       : Fetching admin dashboard statistics
+2025-05-05T05:49:53.130+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.controller.AdminController       : Fetching admin dashboard statistics
+2025-05-05T05:50:00.703+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.controller.AdminController       : Fetching admin dashboard statistics
+2025-05-05T05:51:43.157+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
+2025-05-05T05:51:43.339+02:00  WARN 17284 --- [crime-reporting-backend] [http-nio-8080-exec-7] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
 	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
 	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
 
-2025-05-02T17:17:58.763+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.controller.AdminController       : Fetching admin dashboard statistics
-2025-05-02T17:18:00.979+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.controller.AdminController       : Fetching all users (paged)
-2025-05-02T19:58:04.620+02:00  WARN 8164 --- [crime-reporting-backend] [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h31m35s361ms752µs800ns).
-2025-05-02T20:26:36.746+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: kagabolucky72@gmail.com
-2025-05-02T20:26:36.761+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.service.PasswordResetService     : Password reset code generated for user: kagabolucky72@gmail.com
-2025-05-02T20:28:17.765+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.PasswordResetService     : Password reset successful for user: kagabolucky72@gmail.com
-2025-05-02T20:30:07.158+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: abelegerard78@gmail.com
-2025-05-02T20:30:07.203+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.MfaService               : Generated verification code for abelegerard78@gmail.com: 650693
-2025-05-02T20:30:20.049+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: abelegerard78@gmail.com
-2025-05-02T20:30:20.050+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.service.MfaService               : Generated verification code for abelegerard78@gmail.com: 669998
-2025-05-02T20:35:41.313+02:00  WARN 8164 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.service.MfaService               : Invalid verification code attempt for abelegerard78@gmail.com
-2025-05-02T20:36:00.097+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.MfaService               : Valid verification code for abelegerard78@gmail.com
-2025-05-02T20:36:22.983+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: abelegerard78@gmail.com
-2025-05-02T20:36:22.984+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.MfaService               : Generated verification code for abelegerard78@gmail.com: 898177
-2025-05-02T20:36:51.698+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.MfaService               : Valid verification code for abelegerard78@gmail.com
-2025-05-02T20:36:53.933+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 8, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T20:43:19.836+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: abelegerard78@gmail.com
-2025-05-02T20:43:19.836+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.PasswordResetService     : Password reset code generated for user: abelegerard78@gmail.com
-2025-05-02T20:44:54.904+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:44:54.904+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 674396
-2025-05-02T20:45:04.902+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:45:04.904+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 306524
-2025-05-02T20:47:01.210+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:47:01.213+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 130026
-2025-05-02T20:47:01.627+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:47:01.627+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 623240
-2025-05-02T20:47:11.866+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:47:11.866+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 272298
-2025-05-02T20:50:51.686+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:50:51.687+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 882850
-2025-05-02T20:51:00.387+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:51:00.388+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 576722
-2025-05-02T20:51:28.685+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T20:51:28.685+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 827951
-2025-05-02T20:53:03.432+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.MfaService               : Valid verification code for nyirabisaboe@gmail.com
-2025-05-02T20:53:05.453+02:00  INFO 8164 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 9, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T21:20:24.174+02:00  INFO 8164 --- [crime-reporting-backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
-2025-05-02T21:20:24.292+02:00  INFO 8164 --- [crime-reporting-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
-2025-05-02T21:20:24.912+02:00  INFO 8164 --- [crime-reporting-backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-05-02T21:20:25.467+02:00  INFO 8164 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-05-02T21:20:27.526+02:00  INFO 8164 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-05-02T21:27:28.606+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 7368 (C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend\target\classes started by Humura in C:\Users\elvin\Documents\Idea Projects\crime-reporting-system\crime-reporting-backend)
-2025-05-02T21:27:28.609+02:00 DEBUG 7368 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
-2025-05-02T21:27:28.610+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
-2025-05-02T21:27:29.981+02:00  INFO 7368 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-05-02T21:27:30.065+02:00  INFO 7368 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 74 ms. Found 8 JPA repository interfaces.
-2025-05-02T21:27:30.983+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-05-02T21:27:30.999+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-05-02T21:27:30.999+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
-2025-05-02T21:27:31.058+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-05-02T21:27:31.058+02:00  INFO 7368 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2382 ms
-2025-05-02T21:27:31.392+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-05-02T21:27:31.447+02:00  INFO 7368 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
-2025-05-02T21:27:31.495+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-05-02T21:27:31.812+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-05-02T21:27:31.853+02:00  INFO 7368 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-05-02T21:27:32.054+02:00  INFO 7368 --- [crime-reporting-backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1c5fd813
-2025-05-02T21:27:32.057+02:00  INFO 7368 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-05-02T21:27:32.121+02:00  WARN 7368 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-05-02T21:27:32.140+02:00  INFO 7368 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-05-05T05:51:45.991+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-10] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
+2025-05-05T05:51:49.968+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaint with ID: 1
+2025-05-05T05:51:52.549+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
+2025-05-05T05:51:58.181+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
+2025-05-05T05:52:49.342+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.controller.AdminController       : Fetching admin dashboard statistics
+2025-05-05T05:53:07.999+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.controller.AdminController       : Admin fetching all complaints with details
+2025-05-05T05:53:08.011+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-5] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching all complaints with details for admin
+2025-05-05T05:53:09.461+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.controller.AdminController       : Fetching all police officers
+2025-05-05T05:53:11.954+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.controller.AdminController       : Fetching paged departments
+2025-05-05T05:53:15.951+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.controller.AdminController       : Fetching all police officers
+2025-05-05T05:53:17.802+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.controller.AdminController       : Fetching all departments
+2025-05-05T05:53:17.802+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.impl.AdminServiceImpl    : Getting all departments with officers
+2025-05-05T05:54:20.690+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.controller.AdminController       : Creating new police officer
+2025-05-05T05:54:20.691+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Creating police officer using direct JDBC approach
+2025-05-05T05:54:20.691+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Department ID from request: 1
+2025-05-05T05:54:20.709+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Department with ID 1 exists and will be used for the officer: EAGLE
+2025-05-05T05:54:21.262+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : User created successfully with id: 10
+2025-05-05T05:54:21.266+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Department entity for INSERT: Department{id=1, name='EAGLE', location='Milan', officerCount=1}
+2025-05-05T05:54:21.290+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Department ID for INSERT: 1
+2025-05-05T05:54:21.360+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.service.impl.AdminServiceImpl    : Police officer created successfully with id: 5
+2025-05-05T05:54:21.549+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-9] c.c.r.c.controller.AdminController       : Fetching all police officers
+2025-05-05T05:54:34.380+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.controller.AdminController       : Fetching paged departments
+2025-05-05T05:54:35.764+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.controller.AdminController       : Fetching all users (paged)
+2025-05-05T05:54:39.627+02:00  INFO 17284 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.controller.AdminController       : Fetching admin dashboard statistics
+2025-05-05T06:23:11.809+02:00  INFO 17284 --- [crime-reporting-backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-05-05T06:23:11.893+02:00  INFO 17284 --- [crime-reporting-backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-05-05T06:23:12.016+02:00  INFO 17284 --- [crime-reporting-backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-05T06:23:12.089+02:00  INFO 17284 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-05T06:23:12.141+02:00  INFO 17284 --- [crime-reporting-backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-05T08:46:15.154+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Starting CrimeReportingBackendApplication using Java 23.0.2 with PID 6506 (/home/humura/Documents/IdeaProjects/crime-reporting-system/crime-reporting-backend/target/classes started by humura in /home/humura/Documents/IdeaProjects/crime-reporting-system/crime-reporting-backend)
+2025-05-05T08:46:15.156+02:00 DEBUG 6506 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-05T08:46:15.157+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : No active profile set, falling back to 1 default profile: "default"
+2025-05-05T08:46:16.519+02:00  INFO 6506 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-05T08:46:16.608+02:00  INFO 6506 --- [crime-reporting-backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 78 ms. Found 8 JPA repository interfaces.
+2025-05-05T08:46:17.440+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-05T08:46:17.453+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-05T08:46:17.453+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.39]
+2025-05-05T08:46:17.504+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-05T08:46:17.505+02:00  INFO 6506 --- [crime-reporting-backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2273 ms
+2025-05-05T08:46:17.835+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-05T08:46:17.899+02:00  INFO 6506 --- [crime-reporting-backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-05T08:46:17.932+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-05T08:46:18.180+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-05T08:46:18.220+02:00  INFO 6506 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-05T08:46:18.534+02:00  INFO 6506 --- [crime-reporting-backend] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@1fa58a48
+2025-05-05T08:46:18.535+02:00  INFO 6506 --- [crime-reporting-backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-05T08:46:18.579+02:00  WARN 6506 --- [crime-reporting-backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-05T08:46:18.596+02:00  INFO 6506 --- [crime-reporting-backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
-	Database version: 17.4
+	Database version: 15.3
 	Autocommit mode: undefined/unknown
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-05-02T21:27:33.321+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-05-02T21:27:33.909+02:00  INFO 7368 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-05-02T21:27:34.310+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-05-02T21:27:35.276+02:00 DEBUG 7368 --- [crime-reporting-backend] [main] c.c.r.c.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
-2025-05-02T21:27:35.899+02:00  INFO 7368 --- [crime-reporting-backend] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-05-02T21:27:35.900+02:00  WARN 7368 --- [crime-reporting-backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-05-02T21:27:36.611+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.config.WebConfig                 : Serving files from: C:/Users/elvin/Documents/Idea Projects/crime-reporting-system/crime-reporting-backend/uploads/
-2025-05-02T21:27:36.861+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
-2025-05-02T21:27:37.536+02:00  INFO 7368 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-05-02T21:27:37.545+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Started CrimeReportingBackendApplication in 9.682 seconds (process running for 10.919)
-2025-05-02T21:27:37.553+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : Checking for evidence records with null values...
-2025-05-02T21:27:37.650+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : No evidence records with null values found.
-2025-05-02T21:27:37.680+02:00  INFO 7368 --- [crime-reporting-backend] [main] c.c.r.c.config.AdminUserInitializer      : Admin user already exists, skipping initialization
-2025-05-02T21:27:38.015+02:00  INFO 7368 --- [crime-reporting-backend] [RMI TCP Connection(3)-10.11.72.238] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-05-02T21:27:38.016+02:00  INFO 7368 --- [crime-reporting-backend] [RMI TCP Connection(3)-10.11.72.238] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-05-02T21:27:38.019+02:00  INFO 7368 --- [crime-reporting-backend] [RMI TCP Connection(3)-10.11.72.238] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
-2025-05-02T21:27:59.439+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 9, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T21:27:59.470+02:00  WARN 7368 --- [crime-reporting-backend] [http-nio-8080-exec-3] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
-	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
-	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
-
-2025-05-02T21:28:12.941+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T21:28:12.941+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 448333
-2025-05-02T21:37:49.618+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T21:38:53.071+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.impl.EmailServiceImpl    : Email sent successfully to: nyirabisaboe@gmail.com
-2025-05-02T21:38:53.071+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-8] c.c.r.c.service.MfaService               : Generated verification code for nyirabisaboe@gmail.com: 952780
-2025-05-02T21:40:11.328+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.service.MfaService               : Valid verification code for nyirabisaboe@gmail.com
-2025-05-02T21:40:14.176+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 9, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T22:00:12.653+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-6] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T22:00:25.966+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-7] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T22:00:38.032+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-2] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T22:01:02.351+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.service.AuthService              : Profile updated for user: kagabolucky72@gmail.com
-2025-05-02T22:05:34.719+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-4] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T22:05:44.984+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-3] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
-2025-05-02T22:06:37.575+02:00  INFO 7368 --- [crime-reporting-backend] [http-nio-8080-exec-1] c.c.r.c.s.impl.ComplaintServiceImpl      : Fetching complaints for user with ID: 3, page: Page request [number: 0, size 10, sort: UNSORTED]
+2025-05-05T08:46:19.737+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-05T08:46:20.508+02:00  INFO 6506 --- [crime-reporting-backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-05T08:46:20.848+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-05T08:46:22.070+02:00 DEBUG 6506 --- [crime-reporting-backend] [main] c.c.r.c.s.JwtAuthenticationFilter        : Filter 'jwtAuthenticationFilter' configured for use
+2025-05-05T08:46:22.817+02:00  INFO 6506 --- [crime-reporting-backend] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-05-05T08:46:22.818+02:00  WARN 6506 --- [crime-reporting-backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-05-05T08:46:23.390+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.config.WebConfig                 : Serving files from: /home/humura/Documents/IdeaProjects/crime-reporting-system/crime-reporting-backend/uploads/
+2025-05-05T08:46:23.638+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-05-05T08:46:24.396+02:00  INFO 6506 --- [crime-reporting-backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-05T08:46:24.411+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.CrimeReportingBackendApplication : Started CrimeReportingBackendApplication in 9.769 seconds (process running for 10.655)
+2025-05-05T08:46:24.417+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : Checking for evidence records with null values...
+2025-05-05T08:46:24.513+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.config.EvidenceInitializer       : No evidence records with null values found.
+2025-05-05T08:46:24.539+02:00  INFO 6506 --- [crime-reporting-backend] [main] c.c.r.c.config.AdminUserInitializer      : Admin user already exists, skipping initialization
+2025-05-05T08:46:25.162+02:00  INFO 6506 --- [crime-reporting-backend] [RMI TCP Connection(2)-127.0.0.1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-05-05T08:46:25.163+02:00  INFO 6506 --- [crime-reporting-backend] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-05-05T08:46:25.166+02:00  INFO 6506 --- [crime-reporting-backend] [RMI TCP Connection(2)-127.0.0.1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms

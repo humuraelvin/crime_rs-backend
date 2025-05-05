@@ -95,13 +95,13 @@ public class MfaService {
      * @param code the verification code
      */
     private void sendVerificationEmail(String email, String code) {
-        String subject = "Crime Reporting System - Login Verification Code";
+        String subject = "Police & Crime Management System - Login Verification Code";
         String message = "Hello,\n\n" +
-                "Your verification code for Crime Reporting System login is: " + code + "\n\n" +
+                "Your verification code for Police & Crime Management System login is: " + code + "\n\n" +
                 "This code will expire in " + CODE_EXPIRATION_MINUTES + " minutes.\n\n" +
                 "If you did not request this code, please ignore this email or contact support if you believe this is unauthorized activity.\n\n" +
                 "Thank you,\n" +
-                "Crime Reporting System Team";
+                "Police & Crime Management System Team";
         
         emailService.sendEmail(email, subject, message);
     }
