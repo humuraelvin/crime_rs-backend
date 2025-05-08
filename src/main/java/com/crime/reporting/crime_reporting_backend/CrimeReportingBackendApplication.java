@@ -14,5 +14,4 @@ public class CrimeReportingBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CrimeReportingBackendApplication.class, args);
 	}
-
 }
